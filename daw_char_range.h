@@ -23,7 +23,7 @@
 #pragma once
 #include <iostream>
 #include <boost/utility/string_ref.hpp>
-#include "../third_party/include/utf8/unchecked.h"
+#include "utf8/unchecked.h"
 
 namespace daw {
 	namespace range {

@@ -24,6 +24,7 @@ set( SOURCE_FILES
 	daw_char_range.cpp
  )
 
+include_directories( "third_party/include" )
 include_directories( SYSTEM ${Boost_INCLUDE_DIRS} )
 link_directories( ${Boost_LIBRARY_DIRS} )
 
