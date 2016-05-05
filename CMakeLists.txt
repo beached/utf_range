@@ -32,6 +32,8 @@ add_library( char_range STATIC ${HEADER_FILES} ${SOURCE_FILES} )
 
 install( TARGETS char_range DESTINATION lib )
 
+install( DIRECTORY third_party/install DESTINATION include )
+
 foreach( CUR_PREFIX ${HEADER_FILES} )
 	install( FILES "${CUR_PREFIX}" DESTINATION include/daw/char_range )
 endforeach( CUR_PREFIX )
