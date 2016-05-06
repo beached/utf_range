@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 2.8.0 )
 
-project( parse_template )
+project( char_range_prj )
 
 find_package( Boost 1.59.0 COMPONENTS system filesystem regex unit_test_framework REQUIRED )
 set( Boost_Libs ${BOOST_Libraries} -lboost_system -lboost_regex -lboost_filesystem -lboost_program_options -lboost_unit_test_framework )
