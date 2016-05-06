@@ -31,11 +31,9 @@ include_directories( SYSTEM "third_party/include" )
 include_directories( SYSTEM ${Boost_INCLUDE_DIRS} )
 link_directories( ${Boost_LIBRARY_DIRS} )
 
-add_library( char_range SHARED ${HEADER_FILES} ${SOURCE_FILES} )
-add_library( char_range_static STATIC ${HEADER_FILES} ${SOURCE_FILES} )
+add_library( char_range STATIC ${HEADER_FILES} ${SOURCE_FILES} )
 
 install( TARGETS char_range DESTINATION lib )
-install( TARGETS char_range_static DESTINATION lib )
 
 install( DIRECTORY ${HEADER_FOLDER}/ DESTINATION include/daw/char_range )
 install( DIRECTORY third_party/include/ DESTINATION include )
