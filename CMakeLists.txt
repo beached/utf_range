@@ -38,5 +38,5 @@ install( TARGETS char_range DESTINATION lib )
 install( TARGETS char_range_static DESTINATION lib )
 
 install( DIRECTORY third_party/include/ DESTINATION include )
-install( DIRECTORY ${HEADER_FOLDER}/ DESTINATION include )
+install( DIRECTORY ${HEADER_FOLDER}/ DESTINATION include/daw/char_range )
 
