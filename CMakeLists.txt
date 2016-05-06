@@ -40,6 +40,3 @@ install( TARGETS char_range_static DESTINATION lib )
 install( DIRECTORY third_party/include/ DESTINATION include )
 install( DIRECTORY ${HEADER_FOLDER}/ DESTINATION include )
 
-#foreach( CUR_PREFIX ${HEADER_FILES} )
-#	install( FILES "${CUR_PREFIX}" DESTINATION include/daw/char_range )
-#endforeach( CUR_PREFIX )
