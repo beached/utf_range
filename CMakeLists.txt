@@ -16,14 +16,17 @@ elseif( ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" )
 	set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -g -O3 -Wall -Wno-deprecated-declarations" )
 endif( )
 
+set( HEADER_FOLDER "include" )
+
 set( HEADER_FILES
-	daw_char_range.h
- )
+	${HEADER_FOLDER}/daw_char_range.h
+)
 
 set( SOURCE_FILES
 	daw_char_range.cpp
- )
+)
 
+include_directories( ${HEADER_FOLDER} )
 include_directories( SYSTEM "third_party/include" )
 include_directories( SYSTEM ${Boost_INCLUDE_DIRS} )
 link_directories( ${Boost_LIBRARY_DIRS} )
@@ -35,7 +38,8 @@ install( TARGETS char_range DESTINATION lib )
 install( TARGETS char_range_static DESTINATION lib )
 
 install( DIRECTORY third_party/include/ DESTINATION include )
+install( DIRECTORY ${HEADER_FOLDER}/ DESTINATION include )
 
-foreach( CUR_PREFIX ${HEADER_FILES} )
-	install( FILES "${CUR_PREFIX}" DESTINATION include/daw/char_range )
-endforeach( CUR_PREFIX )
+#foreach( CUR_PREFIX ${HEADER_FILES} )
+#	install( FILES "${CUR_PREFIX}" DESTINATION include/daw/char_range )
+#endforeach( CUR_PREFIX )
