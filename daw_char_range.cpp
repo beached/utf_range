@@ -162,11 +162,11 @@ namespace daw {
 		}
 
 		bool operator==( CharRange const & first, CharRange const & second ) {
-			return std::equal( first.begin( ), first.end( ), second.begin( ) );
+			return std::equal( first.begin( ), first.end( ), second.begin( ), second.end( ) );
 		}
 
 		bool operator==( CharRange const & first, boost::string_ref const & second ) {
-			return std::equal( first.begin( ), first.end( ), second.begin( ), []( UTFValType const & lhs, char const & rhs ) {
+			return std::equal( first.begin( ), first.end( ), second.begin( ), second.end( ), []( UTFValType const & lhs, char const & rhs ) {
 				return static_cast<char>(lhs) == rhs;
 			} );
 		}
