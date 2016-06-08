@@ -145,7 +145,7 @@ namespace daw {
 			return { first, last };
 		}
 
-		CharRange create_char_range( boost::string_ref const & str ) {
+		CharRange create_char_range( boost::string_ref str ) {
 			UTFIterator it_begin( str.begin( ) );
 			UTFIterator it_end( str.end( ) );
 			return { it_begin, it_end };
