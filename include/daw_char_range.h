@@ -65,10 +65,12 @@ namespace daw {
 				void set( iterator Begin, iterator End, difference_type Size = -1 );
 				CharRange & operator+=( size_t const n );
 				CharIterator raw_begin( ) const;
-						CharIterator raw_end( ) const;
-						size_t raw_size( ) const;
+				CharIterator raw_end( ) const;
+				size_t raw_size( ) const;
 
 			};	// struct CharRange
+
+			bool operator<( CharRange const & lhs, CharRange const & rhs );
 
 			CharRange operator+( CharRange range, size_t const n );
 

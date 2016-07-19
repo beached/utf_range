@@ -193,5 +193,16 @@ namespace daw {
 			return { it_begin, static_cast<size_t>(std::distance( it_begin, it_end )) };
 		}
 
+
+		bool operator<( CharRange const & lhs, CharRange const & rhs ) {
+			auto lhs_it = lhs.begin( );
+			auto rhs_it = rhs.begin( );
+			while( *lhs_it < *rhs_it && lhs_it != lhs.end( ) && rhs_it != rhs.end( ) ) {
+				++lhs_it;
+				++rhs_it;
+			}
+			return lhs_it == lhs.end( );
+		}
+
 	}	// namespace range
 }	// namespace daw
