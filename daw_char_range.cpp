@@ -195,13 +195,7 @@ namespace daw {
 
 
 		bool operator<( CharRange const & lhs, CharRange const & rhs ) {
-			auto lhs_it = lhs.begin( );
-			auto rhs_it = rhs.begin( );
-			while( *lhs_it < *rhs_it && lhs_it != lhs.end( ) && rhs_it != rhs.end( ) ) {
-				++lhs_it;
-				++rhs_it;
-			}
-			return lhs_it == lhs.end( );
+			return std::lexicographical_compare( lhs.begin( ), lhs.end( ), rhs.begin( ), rhs.end( ) );
 		}
 
 	}	// namespace range
