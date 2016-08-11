@@ -127,7 +127,7 @@ namespace daw {
 		}
 
 		
-		CharRanage CharRanage::copy( ) const {
+		CharRange CharRange::copy( ) const {
 			return *this;
 		}
 

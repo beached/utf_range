@@ -69,7 +69,7 @@ namespace daw {
 				CharIterator raw_begin( ) const;
 				CharIterator raw_end( ) const;
 				size_t raw_size( ) const;
-				CharRanage copy( ) const;
+				CharRange copy( ) const;
 
 			};	// struct CharRange
 
