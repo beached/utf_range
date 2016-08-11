@@ -63,6 +63,8 @@ namespace daw {
 				void advance( size_t const n );
 				void safe_advance( size_t const count );
 				CharRange & set( iterator Begin, iterator End, difference_type Size = -1 );
+				CharRange & set_begin( iterator Begin, difference_type Size = -1 );
+				CharRange & set_end( iterator End, difference_type Size = -1 );
 				CharRange & operator+=( size_t const n );
 				CharIterator raw_begin( ) const;
 				CharIterator raw_end( ) const;

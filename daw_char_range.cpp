@@ -92,6 +92,14 @@ namespace daw {
 			return *this;
 		}
 
+		CharRange & CharRange::set_begin( CharRange::iterator Begin, CharRange::difference_type Size ) {
+			return set( Begin, this->m_end, Size );
+		}
+
+		CharRange & CharRange::set_end( CharRange::iterator End, CharRange::difference_type Size ) {
+			return set( this->m_begin, End, Size );
+		}
+
 		CharRange operator+( CharRange range, size_t const n ) {
 			range.advance( n );
 			return range;
