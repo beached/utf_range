@@ -62,11 +62,12 @@ namespace daw {
 				CharRange operator++( int );
 				void advance( size_t const n );
 				void safe_advance( size_t const count );
-				void set( iterator Begin, iterator End, difference_type Size = -1 );
+				CharRange & set( iterator Begin, iterator End, difference_type Size = -1 );
 				CharRange & operator+=( size_t const n );
 				CharIterator raw_begin( ) const;
 				CharIterator raw_end( ) const;
 				size_t raw_size( ) const;
+				CharRanage copy( ) const;
 
 			};	// struct CharRange
 

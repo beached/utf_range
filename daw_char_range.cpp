@@ -81,7 +81,7 @@ namespace daw {
 			}
 		}
 
-		void CharRange::set( CharRange::iterator Begin, CharRange::iterator End, CharRange::difference_type Size ) {
+		CharRange & CharRange::set( CharRange::iterator Begin, CharRange::iterator End, CharRange::difference_type Size ) {
 			m_begin = Begin;
 			m_end = End;
 			if( Size < 0 ) {
@@ -89,7 +89,7 @@ namespace daw {
 			} else {
 				m_size = static_cast<size_t>(Size);
 			}
-
+			return *this;
 		}
 
 		CharRange operator+( CharRange range, size_t const n ) {
@@ -116,6 +116,11 @@ namespace daw {
 
 		bool at_end( CharRange const & range ) {
 			return range.size( ) == 0;
+		}
+
+		
+		CharRanage CharRanage::copy( ) const {
+			return *this;
 		}
 
 		size_t hash_sequence( CharIterator first, CharIterator const last ) {
