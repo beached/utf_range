@@ -131,7 +131,7 @@ namespace daw {
 			return *this;
 		}
 
-		CharRange substr( size_t pos, size_t length ) const {
+		CharRange CharRange::substr( size_t pos, size_t length ) const {
 			assert( pos + length <= size( ) );
 			auto result = copy( );
 			auto f = result.begin( ) + pos;
