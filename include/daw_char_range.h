@@ -70,7 +70,7 @@ namespace daw {
 				CharIterator raw_end( ) const;
 				size_t raw_size( ) const;
 				CharRange copy( ) const;
-
+				CharRange substr( size_t pos, size_t length ) const;
 			};	// struct CharRange
 
 			bool operator<( CharRange const & lhs, CharRange const & rhs );

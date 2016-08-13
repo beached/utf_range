@@ -131,6 +131,14 @@ namespace daw {
 			return *this;
 		}
 
+		CharRange substr( size_t pos, size_t length ) const {
+			assert( pos + length <= size( ) );
+			auto result = copy( );
+			auto f = result.begin( ) + pos;
+			auto l = f + length;
+			return result.set( f, l );
+		}
+
 		size_t hash_sequence( CharIterator first, CharIterator const last ) {
 			// FNV-1a hash function for bytes in [fist, last], see http://www.isthe.com/chongo/tech/comp/fnv/index.html
 #if defined(_WIN64) || defined(__amd64__)
