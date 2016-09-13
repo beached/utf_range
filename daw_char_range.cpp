@@ -23,6 +23,7 @@
 #include "daw_char_range.h"
 #include <cassert>
 #include <cstring>
+#include <string>
 
 namespace daw {
 	namespace range {
@@ -137,6 +138,16 @@ namespace daw {
 			auto f = result.begin( ) + pos;
 			auto l = f + length;
 			return result.set( f, l );
+		}
+
+
+		std::u32string CharRange::to_u32string( ) const {
+			std::u32string result;
+			std::transform( begin( ), end( ), std::back_inserter( result ), []( auto c ) {
+				return static_cast<char32_t>( c );
+			});
+			
+			return result;
 		}
 
 		size_t hash_sequence( CharIterator first, CharIterator const last ) {

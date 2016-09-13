@@ -73,6 +73,7 @@ namespace daw {
 				size_t raw_size( ) const;
 				CharRange copy( ) const;
 				CharRange substr( size_t pos, size_t length ) const;
+				std::u32string to_u32string( ) const;
 			};	// struct CharRange
 
 			bool operator<( CharRange const & lhs, CharRange const & rhs );
@@ -97,6 +98,7 @@ namespace daw {
 
 			
 			bool at_end( CharRange const & range );
+
 	}	// namespace range
 
 	std::string from_u32string( std::u32string const & other );
