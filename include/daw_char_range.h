@@ -98,6 +98,7 @@ namespace daw {
 
 			
 			bool at_end( CharRange const & range );
+			std::u32string to_u32string( UTFIterator first, UTFIterator last );
 
 	}	// namespace range
 

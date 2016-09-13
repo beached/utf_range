@@ -230,6 +230,13 @@ namespace daw {
 			return std::lexicographical_compare( lhs.begin( ), lhs.end( ), rhs.begin( ), rhs.end( ) );
 		}
 
+		std::u32string to_u32string( UTFIterator first, UTFIterator last ) {
+			std::u32string result;
+			std::transform( first, last, std::back_inserter( result ), []( auto c ) {
+				return static_cast<char32_t>( c );
+			} );
+			return result;
+		}
 	}	// namespace range
 
 	std::string from_u32string( std::u32string const & other ) {
