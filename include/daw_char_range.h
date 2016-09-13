@@ -96,6 +96,8 @@ namespace daw {
 			
 			bool at_end( CharRange const & range );
 	}	// namespace range
+
+	std::string from_u32string( u32string const & other );
 }	// namespace daw
 
 namespace std {
