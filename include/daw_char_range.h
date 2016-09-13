@@ -21,8 +21,10 @@
 // SOFTWARE.
 
 #pragma once
-#include <iostream>
+
 #include <boost/utility/string_ref.hpp>
+#include <iostream>
+#include <string>
 #include <utf8/unchecked.h>
 
 namespace daw {
@@ -97,7 +99,7 @@ namespace daw {
 			bool at_end( CharRange const & range );
 	}	// namespace range
 
-	std::string from_u32string( u32string const & other );
+	std::string from_u32string( std::u32string const & other );
 }	// namespace daw
 
 namespace std {

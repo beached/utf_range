@@ -221,7 +221,7 @@ namespace daw {
 
 	}	// namespace range
 
-	std::string from_u32string( u32string const & other ) {
+	std::string from_u32string( std::u32string const & other ) {
 		std::string result;
 		utf8::unchecked::u32to8( other.begin( ), other.end( ), std::back_inserter( result ) );
 		return result;
