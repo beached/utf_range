@@ -223,7 +223,7 @@ namespace daw {
 
 	std::string from_u32string( std::u32string const & other ) {
 		std::string result;
-		utf8::unchecked::u32to8( other.begin( ), other.end( ), std::back_inserter( result ) );
+		utf8::unchecked::utf32to8( other.begin( ), other.end( ), std::back_inserter( result ) );
 		return result;
 	}
 }	// namespace daw
