@@ -240,11 +240,6 @@ namespace daw {
 			return std::lexicographical_compare( lhs.begin( ), lhs.end( ), rhs.begin( ), rhs.end( ) );
 		}
 
-		std::ostream& operator<<( std::ostream & os, utf_string const & value ) {
-			os << value.char_range( );
-			return os;
-		}
-
 		std::u32string to_u32string( UTFIterator first, UTFIterator last ) {
 			std::u32string result;
 			std::transform( first, last, std::back_inserter( result ), []( auto c ) {
@@ -346,6 +341,12 @@ namespace daw {
 	boost::string_ref to_string_ref( utf_string const & str ) {
 		return to_string_ref( str.char_range( ) );
 	}
+
+	std::ostream & operator<<( std::ostream & os, utf_string const & value ) {
+		os << value.char_range( );
+		return os;
+	}
+
 
 	std::string from_u32string( std::u32string const & other ) {
 		std::string result;

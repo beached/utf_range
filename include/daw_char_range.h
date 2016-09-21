@@ -143,7 +143,7 @@ namespace daw {
 	bool operator==( utf_string const & lhs, utf_string const & rhs );
 	std::string to_string( utf_string const & str );
 	boost::string_ref to_string_ref( utf_string const & str );
-	std::ostream& operator<<( std::ostream & os, utf_string const & value );
+	std::ostream & operator<<( std::ostream & os, utf_string const & value );
 }	// namespace daw
 
 namespace std {
