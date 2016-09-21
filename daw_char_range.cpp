@@ -27,6 +27,11 @@
 
 namespace daw {
 	namespace range {
+		CharRange::CharRange( ):
+			m_begin{ nullptr },
+			m_end{ nullptr },
+			m_size{ 0 } { }
+
 		CharRange::CharRange( CharRange::iterator Begin, CharRange::iterator End ):
 			m_begin( Begin ),
 			m_end( End ),

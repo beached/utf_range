@@ -47,7 +47,7 @@ namespace daw {
 				iterator m_end;
 				size_t m_size;
 			public:
-				CharRange( ) = delete;
+				CharRange( );
 				~CharRange( ) = default;
 				CharRange( CharRange const & ) = default;
 				CharRange & operator=( CharRange const & ) = default;
