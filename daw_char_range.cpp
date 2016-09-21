@@ -246,6 +246,83 @@ namespace daw {
 		}
 	}	// namespace range
 
+	namespace {
+		template<typename Container>
+		std::string copy_to_string( Container const & c ) {
+			std::string result;
+			std::copy( std::begin( c ), std::end( c ), std::back_inserter( result ) );
+			return result;
+		}
+	}
+
+	utf_string::utf_string( ):
+			m_values{ },
+			m_range{ daw::range::create_char_range( m_values ) } { }
+
+	utf_string::utf_string( boost::string_ref other ):
+			m_values{ copy_to_string( other ) },
+			m_range{ daw::range::create_char_range( m_values ) } { }
+
+	utf_string::utf_string( daw::range::CharRange other ):
+			m_values{ copy_to_string( other ) },
+			m_range{ daw::range::create_char_range( m_values ) } { }
+
+	utf_string::utf_string( utf_string const & other ):
+			m_values{ other.m_values },
+			m_range{ daw::range::create_char_range( m_values ) } { }
+
+	utf_string & utf_string::operator=( utf_string const & rhs ) {
+		if( this != &rhs ) {
+			m_values = rhs.m_values;
+			m_range = daw::range::create_char_range( m_values );
+		}
+		return *this;
+	}
+
+	utf_string::const_iterator utf_string::begin( ) const {
+		return m_range.begin( );
+	}
+
+	utf_string::const_iterator utf_string::end( ) const {
+		return m_range.end( );
+	}
+
+	size_t utf_string::size( ) const {
+		return m_range.size( );
+	}
+
+	bool utf_string::empty( ) const {
+		return m_range.empty( );
+	}
+
+	range::CharIterator utf_string::raw_begin( ) const {
+		return m_range.raw_begin( );
+	}
+
+	range::CharIterator utf_string::raw_end( ) const {
+		return m_range.raw_end( );
+	}
+
+	size_t utf_string::raw_size( ) const {
+		return m_range.raw_size( );
+	}
+
+	utf_string utf_string::substr( size_t pos, size_t length ) const {
+		return utf_string{ m_range.substr( pos, length ) };
+	}
+
+	std::string const & utf_string::to_string( ) const {
+		return m_values;
+	}
+
+	std::u32string utf_string::to_u32string( ) const {
+		return m_range.to_u32string( );
+	}
+
+	range::CharRange const & utf_string::get_char_range( ) const {
+		return m_range;
+	}
+
 	std::string from_u32string( std::u32string const & other ) {
 		std::string result;
 		utf8::unchecked::utf32to8( other.begin( ), other.end( ), std::back_inserter( result ) );

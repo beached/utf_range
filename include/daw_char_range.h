@@ -103,6 +103,43 @@ namespace daw {
 	}	// namespace range
 
 	std::string from_u32string( std::u32string const & other );
+
+	struct utf_string {
+		using iterator = range::UTFIterator;
+		using const_iterator = range::UTFIterator const;
+		using reference = range::UTFIterator::reference;
+		using value_type = range::UTFIterator::value_type;
+		using const_reference = value_type const &;
+		using difference_type = range::UTFIterator::difference_type;
+	private:
+		std::string m_values;
+		daw::range::CharRange m_range;
+
+	public:
+		utf_string( );
+		utf_string( boost::string_ref other );
+		utf_string( daw::range::CharRange other );
+		utf_string( utf_string const & other );
+		utf_string & operator=( utf_string const & rhs );
+
+		~utf_string( ) = default;
+		utf_string( utf_string && ) = default;
+		utf_string & operator=( utf_string && ) = default;
+
+		const_iterator begin( ) const;
+		const_iterator end( ) const;
+		size_t size( ) const;
+		bool empty( ) const;
+		range::CharIterator raw_begin( ) const;
+		range::CharIterator raw_end( ) const;
+		size_t raw_size( ) const;
+		utf_string substr( size_t pos, size_t length ) const;
+
+		std::string const & to_string( ) const;
+		std::u32string to_u32string( ) const;
+		range::CharRange const & get_char_range( ) const;
+	};	// utf_string
+
 }	// namespace daw
 
 namespace std {
