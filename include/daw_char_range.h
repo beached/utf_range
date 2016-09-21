@@ -48,7 +48,7 @@ namespace daw {
 				size_t m_size;
 			public:
 				CharRange( );
-				~CharRange( ) = default;
+				~CharRange( );
 				CharRange( CharRange const & ) = default;
 				CharRange & operator=( CharRange const & ) = default;
 				CharRange( CharRange && ) = default;

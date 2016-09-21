@@ -37,6 +37,8 @@ namespace daw {
 			m_end( End ),
 			m_size( static_cast<size_t>(std::distance( Begin, End )) ) { }
 
+		CharRange::~CharRange( ) { }
+
 		CharRange::iterator CharRange::begin( ) {
 			return m_begin;
 		}
