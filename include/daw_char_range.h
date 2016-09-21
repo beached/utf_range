@@ -96,7 +96,6 @@ namespace daw {
 			
 			boost::string_ref to_string_ref( CharRange const & str );
 
-			
 			bool at_end( CharRange const & range );
 			std::u32string to_u32string( UTFIterator first, UTFIterator last );
 
@@ -137,9 +136,13 @@ namespace daw {
 
 		std::string const & to_string( ) const;
 		std::u32string to_u32string( ) const;
-		range::CharRange const & get_char_range( ) const;
+		range::CharRange const & char_range( ) const;
 	};	// utf_string
 
+	bool operator<( utf_string const & lhs, utf_string const & rhs );
+	bool operator==( utf_string const & lhs, utf_string const & rhs );
+	std::string to_string( utf_string const & str );
+	boost::string_ref to_string_ref( utf_string const & str );
 }	// namespace daw
 
 namespace std {
@@ -147,6 +150,14 @@ namespace std {
 	struct hash<daw::range::CharRange> {
 		size_t operator()( daw::range::CharRange const & value ) const {
 			return daw::range::hash_sequence( value.begin( ).base( ), value.end( ).base( ) );
+		}
+	};
+
+	template<>
+	struct hash<daw::utf_string> {
+		std::hash<std::string> m_hash;
+		size_t operator()( daw::utf_string const & value ) const {
+			return m_hash( value.to_string( ) );
 		}
 	};
 }

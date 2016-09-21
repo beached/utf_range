@@ -232,6 +232,9 @@ namespace daw {
 			return { it_begin, static_cast<size_t>(std::distance( it_begin, it_end )) };
 		}
 
+		boost::string_ref to_string_ref( utf_string const & str ) {
+			return to_string_ref( str.char_range( ) );
+		}
 
 		bool operator<( CharRange const & lhs, CharRange const & rhs ) {
 			return std::lexicographical_compare( lhs.begin( ), lhs.end( ), rhs.begin( ), rhs.end( ) );
@@ -319,8 +322,24 @@ namespace daw {
 		return m_range.to_u32string( );
 	}
 
-	range::CharRange const & utf_string::get_char_range( ) const {
+	range::CharRange const & utf_string::char_range( ) const {
 		return m_range;
+	}
+
+	bool operator<( utf_string const & lhs, utf_string const & rhs ) {
+		return lhs.to_string( ) < rhs.to_string( );
+	}
+
+	bool operator==( utf_string const & lhs, utf_string const & rhs ) {
+		return lhs.to_string( ) == rhs.to_string( );
+	}
+
+	std::string to_string( utf_string const & str ) {
+		return str.to_string( );
+	}
+
+	boost::string_ref to_string_ref( utf_string const & str ) {
+		return to_string_ref( str.char_range( ) );
 	}
 
 	std::string from_u32string( std::u32string const & other ) {
