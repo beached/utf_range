@@ -74,9 +74,9 @@ namespace daw {
 				CharRange copy( ) const;
 				CharRange substr( size_t pos, size_t length ) const;
 				std::u32string to_u32string( ) const;
+				int compare( CharRange const & rhs ) const;
 			};	// struct CharRange
 
-			bool operator<( CharRange const & lhs, CharRange const & rhs );
 
 			CharRange operator+( CharRange range, size_t const n );
 
@@ -86,8 +86,13 @@ namespace daw {
 			CharRange create_char_range( CharIterator first, CharIterator last );
 			CharRange create_char_range( CharIterator first );
 
-			bool operator==( CharRange const & first, CharRange const & second );
-			bool operator==( CharRange const & first, boost::string_ref const & second );
+			bool operator==( CharRange const & lhs, CharRange const & rhs );
+			bool operator==( CharRange const & lhs, boost::string_ref const & rhs );
+			bool operator!=( CharRange const & lhs, CharRange const & rhs );
+			bool operator<( CharRange const & lhs, CharRange const & rhs );
+			bool operator>( CharRange const & lhs, CharRange const & rhs );
+			bool operator<=( CharRange const & lhs, CharRange const & rhs );
+			bool operator>=( CharRange const & lhs, CharRange const & rhs );
 
 			void clear( CharRange & str );
 			std::string to_string( CharRange const & str );
@@ -119,7 +124,11 @@ namespace daw {
 		utf_string( boost::string_ref other );
 		utf_string( daw::range::CharRange other );
 		utf_string( utf_string const & other );
+		utf_string( char const * other );
 		utf_string & operator=( utf_string const & rhs );
+		utf_string & operator=( boost::string_ref rhs );
+		utf_string & operator=( char const * rhs );
+		utf_string & operator=( std::string const & rhs );
 
 		~utf_string( ) = default;
 		utf_string( utf_string && ) = default;
@@ -137,10 +146,15 @@ namespace daw {
 		std::string const & to_string( ) const;
 		std::u32string to_u32string( ) const;
 		range::CharRange const & char_range( ) const;
+		int compare( utf_string const & rhs ) const;
 	};	// utf_string
 
-	bool operator<( utf_string const & lhs, utf_string const & rhs );
 	bool operator==( utf_string const & lhs, utf_string const & rhs );
+	bool operator!=( utf_string const & lhs, utf_string const & rhs );
+	bool operator<( utf_string const & lhs, utf_string const & rhs );
+	bool operator>( utf_string const & lhs, utf_string const & rhs );
+	bool operator<=( utf_string const & lhs, utf_string const & rhs );
+	bool operator>=( utf_string const & lhs, utf_string const & rhs );
 	std::string to_string( utf_string const & str );
 	boost::string_ref to_string_ref( utf_string const & str );
 	std::ostream & operator<<( std::ostream & os, utf_string const & value );

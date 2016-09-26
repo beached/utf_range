@@ -2,8 +2,9 @@ cmake_minimum_required( VERSION 2.8.12 )
 
 project( char_range_prj )
 
-find_package( Boost 1.58.0 REQUIRED )
+find_package( Boost 1.58.0 COMPONENTS system filesystem regex unit_test_framework iostreams REQUIRED )
 
+add_definitions( -DBOOST_TEST_DYN_LINK ) 
 IF( ${CMAKE_CXX_COMPILER_ID} STREQUAL 'MSVC' )
 	add_compile_options( -D_WIN32_WINNT=0x0601 ) 
 ELSE( )
@@ -35,3 +36,8 @@ install( TARGETS char_range DESTINATION lib )
 
 install( DIRECTORY ${HEADER_FOLDER}/ DESTINATION include/daw/char_range )
 install( DIRECTORY third_party/include/ DESTINATION include )
+
+add_executable( char_range_test_bin daw_char_range_test.cpp ${HEADER_FILES} )
+target_link_libraries( char_range_test_bin char_range ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} )
+add_test( char_range_test, char_range_test_bin )
+

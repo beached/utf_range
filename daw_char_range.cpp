@@ -199,18 +199,7 @@ namespace daw {
 		CharRange create_char_range( CharIterator first ) { 
 			return create_char_range( first, first + strlen( first ) );
 		}
-
-		bool operator==( CharRange const & first, CharRange const & second ) {
-			return std::equal( first.begin( ), first.end( ), second.begin( ), second.end( ) );
-		}
-
-		bool operator==( CharRange const & first, boost::string_ref const & second ) {
-			return std::equal( first.begin( ), first.end( ), second.begin( ), second.end( ), []( UTFValType const & lhs, char const & rhs ) {
-				return static_cast<char>(lhs) == rhs;
-			} );
-		}
-
-		void clear( CharRange & str ) {
+				void clear( CharRange & str ) {
 			str.advance( str.size( ) );
 		}
 
@@ -236,8 +225,55 @@ namespace daw {
 			return to_string_ref( str.char_range( ) );
 		}
 
+		int CharRange::compare( CharRange const & rhs ) const {
+			auto it_lhs = begin( );
+			auto it_rhs = rhs.begin( );
+			while( it_lhs != end( ) && it_rhs != rhs.end( ) ) {
+				auto const l = *it_lhs;
+				auto const r = *it_rhs;
+				if( l != r ) {
+					if( l < r ) {
+						return -1;
+					}
+					return 1;
+				}
+				++it_lhs;
+				++it_rhs;
+			}
+			if( it_lhs != end( ) ) {
+				return 1;
+			} else if( it_rhs != end( ) ) {
+				return -1;
+			}
+			return 0;
+		}
+
+		bool operator==( CharRange const & lhs, CharRange const & rhs ) {
+			return lhs.compare( rhs ) == 0;
+		}
+
+		bool operator==( CharRange const & lhs, boost::string_ref const & rhs ) {
+			return lhs == create_char_range( rhs );
+		}
+
+		bool operator!=( CharRange const & lhs, CharRange const & rhs ) {
+			return lhs.compare( rhs ) != 0;
+		}
+
 		bool operator<( CharRange const & lhs, CharRange const & rhs ) {
-			return std::lexicographical_compare( lhs.begin( ), lhs.end( ), rhs.begin( ), rhs.end( ) );
+			return lhs.compare( rhs ) < 0;
+		}
+
+		bool operator>( CharRange const & lhs, CharRange const & rhs ) {
+			return lhs.compare( rhs ) > 0;
+		}
+
+		bool operator<=( CharRange const & lhs, CharRange const & rhs ) {
+			return lhs.compare( rhs ) <= 0;
+		}
+
+		bool operator>=( CharRange const & lhs, CharRange const & rhs ) {
+			return lhs.compare( rhs ) >= 0;
 		}
 
 		std::u32string to_u32string( UTFIterator first, UTFIterator last ) {
@@ -256,6 +292,11 @@ namespace daw {
 			std::copy( std::begin( c ), std::end( c ), std::back_inserter( result ) );
 			return result;
 		}
+
+		std::string copy_to_string( char const * const str ) {
+			return std::string{ str };
+		}
+
 	}
 
 	utf_string::utf_string( ):
@@ -282,6 +323,10 @@ namespace daw {
 		return *this;
 	}
 
+	utf_string::utf_string( char const * other ): 
+			m_values{ copy_to_string( other ) },
+			m_range{ daw::range::create_char_range( m_values ) } { }
+
 	utf_string::const_iterator utf_string::begin( ) const {
 		return m_range.begin( );
 	}
@@ -306,6 +351,27 @@ namespace daw {
 		return m_range.raw_end( );
 	}
 
+	utf_string & utf_string::operator=( boost::string_ref rhs ) {
+		using std::swap;
+		utf_string tmp{ rhs };
+		swap( *this, tmp );
+		return *this;
+	}
+
+	utf_string & utf_string::operator=( char const * rhs ) {
+		using std::swap;
+		utf_string tmp{ rhs };
+		swap( *this, tmp );
+		return *this;
+	}
+
+	utf_string & utf_string::operator=( std::string const & rhs ) {
+		using std::swap;
+		utf_string tmp{ rhs };
+		swap( *this, tmp );
+		return *this;
+	}
+
 	size_t utf_string::raw_size( ) const {
 		return m_range.raw_size( );
 	}
@@ -326,13 +392,34 @@ namespace daw {
 		return m_range;
 	}
 
-	bool operator<( utf_string const & lhs, utf_string const & rhs ) {
-		return lhs.to_string( ) < rhs.to_string( );
+	int utf_string::compare( utf_string const & rhs ) const {
+		return m_range.compare( rhs.m_range );
 	}
 
 	bool operator==( utf_string const & lhs, utf_string const & rhs ) {
-		return lhs.to_string( ) == rhs.to_string( );
+		return lhs.compare( rhs ) == 0;
 	}
+
+	bool operator!=( utf_string const & lhs, utf_string const & rhs ) {
+		return lhs.compare( rhs ) != 0;
+	}
+
+	bool operator<( utf_string const & lhs, utf_string const & rhs ) {
+		return lhs.compare( rhs ) < 0;
+	}
+
+	bool operator>( utf_string const & lhs, utf_string const & rhs ) {
+		return lhs.compare( rhs ) > 0;
+	}
+
+	bool operator<=( utf_string const & lhs, utf_string const & rhs ) {
+		return lhs.compare( rhs ) <= 0;
+	}
+
+	bool operator>=( utf_string const & lhs, utf_string const & rhs ) {
+		return lhs.compare( rhs ) >= 0;
+	}
+
 
 	std::string to_string( utf_string const & str ) {
 		return str.to_string( );
