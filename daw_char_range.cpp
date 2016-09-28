@@ -343,6 +343,18 @@ namespace daw {
 		return m_range.empty( );
 	}
 
+	utf_string::~utf_string( ) { }
+
+	void utf_string::swap( utf_string & rhs ) noexcept {
+		using std::swap;
+		swap( m_values, rhs.m_values );
+		swap( m_range, rhs.m_range );
+	}
+
+	void swap( utf_string & lhs, utf_string & rhs ) noexcept {
+		lhs.swap( rhs );
+	}
+
 	range::CharIterator utf_string::raw_begin( ) const {
 		return m_range.raw_begin( );
 	}

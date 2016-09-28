@@ -130,9 +130,11 @@ namespace daw {
 		utf_string & operator=( char const * rhs );
 		utf_string & operator=( std::string const & rhs );
 
-		~utf_string( ) = default;
+		~utf_string( );
 		utf_string( utf_string && ) = default;
 		utf_string & operator=( utf_string && ) = default;
+
+		void swap( utf_string & rhs ) noexcept;
 
 		const_iterator begin( ) const;
 		const_iterator end( ) const;
@@ -148,6 +150,8 @@ namespace daw {
 		range::CharRange const & char_range( ) const;
 		int compare( utf_string const & rhs ) const;
 	};	// utf_string
+
+	void swap( utf_string & lhs, utf_string & rhs ) noexcept;
 
 	bool operator==( utf_string const & lhs, utf_string const & rhs );
 	bool operator!=( utf_string const & lhs, utf_string const & rhs );
