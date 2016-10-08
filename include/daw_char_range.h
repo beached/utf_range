@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <boost/utility/string_ref.hpp>
+#include <boost/utility/string_view.hpp>
 #include <iostream>
 #include <string>
 #include <utf8/unchecked.h>
@@ -82,12 +82,12 @@ namespace daw {
 
 
 			CharRange create_char_range( UTFIterator const first,  UTFIterator const last );
-			CharRange create_char_range( boost::string_ref str );
+			CharRange create_char_range( boost::string_view str );
 			CharRange create_char_range( CharIterator first, CharIterator last );
 			CharRange create_char_range( CharIterator first );
 
 			bool operator==( CharRange const & lhs, CharRange const & rhs );
-			bool operator==( CharRange const & lhs, boost::string_ref const & rhs );
+			bool operator==( CharRange const & lhs, boost::string_view const & rhs );
 			bool operator!=( CharRange const & lhs, CharRange const & rhs );
 			bool operator<( CharRange const & lhs, CharRange const & rhs );
 			bool operator>( CharRange const & lhs, CharRange const & rhs );
@@ -99,7 +99,7 @@ namespace daw {
 
 			std::ostream& operator<<( std::ostream & os, CharRange const & value );
 			
-			boost::string_ref to_string_ref( CharRange const & str );
+			boost::string_view to_string_view( CharRange const & str );
 
 			bool at_end( CharRange const & range );
 			std::u32string to_u32string( UTFIterator first, UTFIterator last );
@@ -121,12 +121,12 @@ namespace daw {
 
 	public:
 		utf_string( );
-		utf_string( boost::string_ref other );
+		utf_string( boost::string_view other );
 		utf_string( daw::range::CharRange other );
 		utf_string( utf_string const & other );
 		utf_string( char const * other );
 		utf_string & operator=( utf_string const & rhs );
-		utf_string & operator=( boost::string_ref rhs );
+		utf_string & operator=( boost::string_view rhs );
 		utf_string & operator=( char const * rhs );
 		utf_string & operator=( std::string const & rhs );
 
@@ -160,7 +160,7 @@ namespace daw {
 	bool operator<=( utf_string const & lhs, utf_string const & rhs );
 	bool operator>=( utf_string const & lhs, utf_string const & rhs );
 	std::string to_string( utf_string const & str );
-	boost::string_ref to_string_ref( utf_string const & str );
+	boost::string_view to_string_view( utf_string const & str );
 	std::ostream & operator<<( std::ostream & os, utf_string const & value );
 }	// namespace daw
 
