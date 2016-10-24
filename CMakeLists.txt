@@ -16,13 +16,15 @@ ELSE( )
 ENDIF()
 
 set( HEADER_FOLDER "include" )
+set( SOURCE_FOLDER "src" )
+set( TEST_FOLDER "tests" )
 
 set( HEADER_FILES
 	${HEADER_FOLDER}/daw_char_range.h
 )
 
 set( SOURCE_FILES
-	daw_char_range.cpp
+	${SOURCE_FOLDER}/daw_char_range.cpp
 )
 
 include_directories( ${HEADER_FOLDER} )
@@ -37,7 +39,7 @@ install( TARGETS char_range DESTINATION lib )
 install( DIRECTORY ${HEADER_FOLDER}/ DESTINATION include/daw/char_range )
 install( DIRECTORY third_party/include/ DESTINATION include )
 
-add_executable( char_range_test_bin daw_char_range_test.cpp ${HEADER_FILES} )
+add_executable( char_range_test_bin ${TEST_FOLDER}/daw_char_range_test.cpp ${HEADER_FILES} )
 target_link_libraries( char_range_test_bin char_range ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} )
 add_test( char_range_test, char_range_test_bin )
 

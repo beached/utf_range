@@ -74,6 +74,7 @@ namespace daw {
 				CharRange copy( ) const;
 				CharRange substr( size_t pos, size_t length ) const;
 				std::u32string to_u32string( ) const;
+				std::string to_raw_u8string( ) const;
 				int compare( CharRange const & rhs ) const;
 			};	// struct CharRange
 
