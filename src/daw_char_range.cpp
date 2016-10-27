@@ -221,11 +221,14 @@ namespace daw {
 			return os;
 		}
 
-		boost::string_view to_string_view( CharRange const & str ) {
-			auto it_begin = str.begin( ).base( );
-			auto it_end = str.end( ).base( );
+		boost::string_view CharRange::to_string_view( ) const {
+			auto const & it_begin = begin( ).base( );
+			auto const sz = std::distance( it_begin, end( ).base( ) );	
+			return { it_begin, static_cast<size_t>(sz) };
+		}
 
-			return { it_begin, static_cast<size_t>(std::distance( it_begin, it_end )) };
+		boost::string_view to_string_view( CharRange const & str ) {
+			return str.to_string_view( );
 		}
 
 		boost::string_view to_string_view( utf_string const & str ) {

@@ -76,6 +76,7 @@ namespace daw {
 				std::u32string to_u32string( ) const;
 				std::string to_raw_u8string( ) const;
 				int compare( CharRange const & rhs ) const;
+				boost::string_view to_string_view( ) const;
 			};	// struct CharRange
 
 
