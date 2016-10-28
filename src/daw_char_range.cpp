@@ -463,3 +463,9 @@ namespace daw {
 		return result;
 	}
 }	// namespace daw
+
+std::string to_string( daw::utf_string const & str ) {
+	return str.to_string( );
+}
+
+

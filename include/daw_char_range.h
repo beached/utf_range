@@ -166,6 +166,8 @@ namespace daw {
 	std::ostream & operator<<( std::ostream & os, utf_string const & value );
 }	// namespace daw
 
+std::string to_string( daw::utf_string const & str );
+
 namespace std {
 	template<>
 	struct hash<daw::range::CharRange> {
