@@ -47,36 +47,39 @@ namespace daw {
 				iterator m_end;
 				size_t m_size;
 			public:
-				CharRange( );
-				~CharRange( );
-				CharRange( CharRange const & ) = default;
-				CharRange & operator=( CharRange const & ) = default;
-				CharRange( CharRange && ) = default;
-				CharRange & operator=( CharRange && ) = default;
-				CharRange( iterator Begin, iterator End );
-				iterator begin( );
-				const_iterator begin( ) const;
-				iterator end( );
-				const_iterator end( ) const;
-				size_t size( ) const;
-				bool empty( ) const;
-				CharRange & operator++( );
-				CharRange operator++( int );
-				void advance( size_t const n );
-				void safe_advance( size_t const count );
-				CharRange & set( iterator Begin, iterator End, difference_type Size = -1 );
-				CharRange & set_begin( iterator Begin, difference_type Size = -1 );
-				CharRange & set_end( iterator End, difference_type Size = -1 );
-				CharRange & operator+=( size_t const n );
-				CharIterator raw_begin( ) const;
-				CharIterator raw_end( ) const;
-				size_t raw_size( ) const;
-				CharRange copy( ) const;
-				CharRange substr( size_t pos, size_t length ) const;
-				std::u32string to_u32string( ) const;
-				std::string to_raw_u8string( ) const;
-				int compare( CharRange const & rhs ) const;
-				boost::string_view to_string_view( ) const;
+			  CharRange( ) noexcept; 
+
+			  ~CharRange( );
+			  CharRange( CharRange const & ) = default;
+			  CharRange &operator=( CharRange const & ) = default;
+			  CharRange( CharRange && ) = default;
+			  CharRange &operator=( CharRange && ) = default;
+			  CharRange( iterator Begin, iterator End );
+
+			  iterator begin( ) noexcept;
+			  const_iterator begin( ) const noexcept;
+			  iterator end( ) noexcept;
+			  const_iterator end( ) const noexcept;
+			  size_t size( ) const noexcept;
+			  bool empty( ) const noexcept;
+
+			  CharRange &operator++( );
+			  CharRange operator++( int );
+			  void advance( size_t const n );
+			  void safe_advance( size_t const count );
+			  CharRange &set( iterator Begin, iterator End, difference_type Size = -1 );
+			  CharRange &set_begin( iterator Begin, difference_type Size = -1 );
+			  CharRange &set_end( iterator End, difference_type Size = -1 );
+			  CharRange &operator+=( size_t const n );
+			  CharIterator raw_begin( ) const;
+			  CharIterator raw_end( ) const;
+			  size_t raw_size( ) const;
+			  CharRange copy( ) const;
+			  CharRange substr( size_t pos, size_t length ) const;
+			  std::u32string to_u32string( ) const;
+			  std::string to_raw_u8string( ) const;
+			  int compare( CharRange const &rhs ) const;
+			  boost::string_view to_string_view( ) const;
 			};	// struct CharRange
 
 

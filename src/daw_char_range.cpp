@@ -29,43 +29,38 @@
 
 namespace daw {
 	namespace range {
-		CharRange::CharRange( ):
-			m_begin{ nullptr },
-			m_end{ nullptr },
-			m_size{ 0 } { }
+		CharRange::CharRange( ) noexcept : m_begin{nullptr}, m_end{nullptr}, m_size{0} {}
 
-		CharRange::CharRange( CharRange::iterator Begin, CharRange::iterator End ):
-			m_begin( Begin ),
-			m_end( End ),
-			m_size( static_cast<size_t>(std::distance( Begin, End )) ) { }
+		CharRange::CharRange( CharRange::iterator Begin, CharRange::iterator End )
+		    : m_begin( Begin ), m_end( End ), m_size( static_cast<size_t>( std::distance( Begin, End ) ) ) {}
 
-		CharRange::~CharRange( ) { }
+		CharRange::~CharRange( ) {}
 
-		CharRange::iterator CharRange::begin( ) {
+		CharRange::iterator CharRange::begin( ) noexcept {
 			return m_begin;
 		}
 
-		CharRange::const_iterator CharRange::begin( ) const {
+		CharRange::const_iterator CharRange::begin( ) const noexcept {
 			return m_begin;
 		}
 
-		CharRange::iterator CharRange::end( ) {
+		CharRange::iterator CharRange::end( ) noexcept {
 			return m_end;
 		}
 
-		CharRange::const_iterator CharRange::end( ) const {
+		CharRange::const_iterator CharRange::end( ) const noexcept {
 			return m_end;
 		}
 
-		size_t CharRange::size( ) const {
+		size_t CharRange::size( ) const noexcept {
 			return m_size;
 		}
-		
-		bool CharRange::empty( ) const {
+
+		bool CharRange::empty( ) const noexcept {
 			return m_size == 0;
 		}
 
-		CharRange & CharRange::operator++( ) {
+		CharRange &CharRange::operator++( ) {
 			++m_begin;
 			--m_size;
 			return *this;
@@ -73,7 +68,7 @@ namespace daw {
 
 		CharRange CharRange::operator++( int ) {
 			CharRange result( *this );
-			++(*this);
+			++( *this );
 			return result;
 		}
 
@@ -91,22 +86,23 @@ namespace daw {
 			}
 		}
 
-		CharRange & CharRange::set( CharRange::iterator Begin, CharRange::iterator End, CharRange::difference_type Size ) {
+		CharRange &CharRange::set( CharRange::iterator Begin, CharRange::iterator End,
+		                           CharRange::difference_type Size ) {
 			m_begin = Begin;
 			m_end = End;
 			if( Size < 0 ) {
-				m_size = static_cast<size_t>(std::distance( m_begin, m_end ));
+				m_size = static_cast<size_t>( std::distance( m_begin, m_end ) );
 			} else {
-				m_size = static_cast<size_t>(Size);
+				m_size = static_cast<size_t>( Size );
 			}
 			return *this;
 		}
 
-		CharRange & CharRange::set_begin( CharRange::iterator Begin, CharRange::difference_type Size ) {
+		CharRange &CharRange::set_begin( CharRange::iterator Begin, CharRange::difference_type Size ) {
 			return set( Begin, this->m_end, Size );
 		}
 
-		CharRange & CharRange::set_end( CharRange::iterator End, CharRange::difference_type Size ) {
+		CharRange &CharRange::set_end( CharRange::iterator End, CharRange::difference_type Size ) {
 			return set( this->m_begin, End, Size );
 		}
 
@@ -115,7 +111,7 @@ namespace daw {
 			return range;
 		}
 
-		CharRange & CharRange::operator+=( size_t const n ) { 
+		CharRange &CharRange::operator+=( size_t const n ) {
 			advance( n );
 			return *this;
 		}
@@ -129,14 +125,13 @@ namespace daw {
 		}
 
 		size_t CharRange::raw_size( ) const {
-			return static_cast<size_t>(std::distance( m_begin.base( ), m_end.base( ) ));
+			return static_cast<size_t>( std::distance( m_begin.base( ), m_end.base( ) ) );
 		}
 
-		bool at_end( CharRange const & range ) {
+		bool at_end( CharRange const &range ) {
 			return range.size( ) == 0;
 		}
 
-		
 		CharRange CharRange::copy( ) const {
 			return *this;
 		}
@@ -149,13 +144,11 @@ namespace daw {
 			return result.set( f, l );
 		}
 
-
 		std::u32string CharRange::to_u32string( ) const {
 			std::u32string result;
-			std::transform( begin( ), end( ), std::back_inserter( result ), []( auto c ) {
-				return static_cast<char32_t>( c );
-			});
-			
+			std::transform( begin( ), end( ), std::back_inserter( result ),
+			                []( auto c ) { return static_cast<char32_t>( c ); } );
+
 			return result;
 		}
 
@@ -163,58 +156,58 @@ namespace daw {
 			return std::string( m_begin.base( ), m_end.base( ) );
 		}
 
-
 		size_t hash_sequence( CharIterator first, CharIterator const last ) {
-			// FNV-1a hash function for bytes in [fist, last], see http://www.isthe.com/chongo/tech/comp/fnv/index.html
-#if defined(_WIN64) || defined(__amd64__)
-			static_assert(sizeof( size_t ) == 8, "This code is for 64-bit size_t.");
+// FNV-1a hash function for bytes in [fist, last], see http://www.isthe.com/chongo/tech/comp/fnv/index.html
+#if defined( _WIN64 ) || defined( __amd64__ )
+			static_assert( sizeof( size_t ) == 8, "This code is for 64-bit size_t." );
 			size_t const fnv_offset_basis = 14695981039346656037ULL;
 			size_t const fnv_prime = 1099511628211ULL;
 
-#elif defined(_WIN32) || defined(__i386__)
-			static_assert(sizeof( size_t ) == 4, "This code is for 32-bit size_t.");
+#elif defined( _WIN32 ) || defined( __i386__ )
+			static_assert( sizeof( size_t ) == 4, "This code is for 32-bit size_t." );
 			size_t const fnv_offset_basis = 2166136261U;
 			size_t const fnv_prime = 16777619U;
 #else
 #error "Unknown platform for hash"
-#endif 
+#endif
 
 			auto result = fnv_offset_basis;
 			for( ; first <= last; ++first ) {
-				result ^= static_cast<size_t>(*first);
+				result ^= static_cast<size_t>( *first );
 				result *= fnv_prime;
 			}
 			return result;
 		}
 
 		CharRange create_char_range( UTFIterator first, UTFIterator last ) {
-			return { first, last };
+			return {first, last};
 		}
 
 		CharRange create_char_range( boost::string_view str ) {
 			UTFIterator it_begin( str.begin( ) );
 			UTFIterator it_end( str.end( ) );
-			return { it_begin, it_end };
+			return {it_begin, it_end};
 		}
-		
+
 		CharRange create_char_range( CharIterator first, CharIterator last ) {
 			UTFIterator it_begin( first );
 			UTFIterator it_end( last );
-			return { it_begin, it_end };
+			return {it_begin, it_end};
 		}
 
-		CharRange create_char_range( CharIterator first ) { 
+		CharRange create_char_range( CharIterator first ) {
 			return create_char_range( first, first + strlen( first ) );
 		}
-				void clear( CharRange & str ) {
+		void clear( CharRange &str ) {
 			str.advance( str.size( ) );
 		}
 
-		std::string to_string( CharRange const & str ) {
-			return std::string { str.begin( ).base( ), static_cast<size_t>(std::distance( str.begin( ).base( ), str.end( ).base( ) )) };
+		std::string to_string( CharRange const &str ) {
+			return std::string{str.begin( ).base( ),
+			                   static_cast<size_t>( std::distance( str.begin( ).base( ), str.end( ).base( ) ) )};
 		}
 
-		std::ostream& operator<<( std::ostream & os, CharRange const & value ) {
+		std::ostream &operator<<( std::ostream &os, CharRange const &value ) {
 			for( auto it = value.begin( ).base( ); it != value.end( ).base( ); ++it ) {
 				os << *it;
 			}
@@ -222,20 +215,20 @@ namespace daw {
 		}
 
 		boost::string_view CharRange::to_string_view( ) const {
-			auto const & it_begin = begin( ).base( );
-			auto const sz = std::distance( it_begin, end( ).base( ) );	
-			return { it_begin, static_cast<size_t>(sz) };
+			auto const &it_begin = begin( ).base( );
+			auto const sz = std::distance( it_begin, end( ).base( ) );
+			return {it_begin, static_cast<size_t>( sz )};
 		}
 
-		boost::string_view to_string_view( CharRange const & str ) {
+		boost::string_view to_string_view( CharRange const &str ) {
 			return str.to_string_view( );
 		}
 
-		boost::string_view to_string_view( utf_string const & str ) {
+		boost::string_view to_string_view( utf_string const &str ) {
 			return to_string_view( str.char_range( ) );
 		}
 
-		int CharRange::compare( CharRange const & rhs ) const {
+		int CharRange::compare( CharRange const &rhs ) const {
 			auto it_lhs = begin( );
 			auto it_rhs = rhs.begin( );
 			while( it_lhs != end( ) && it_rhs != rhs.end( ) ) {
@@ -258,74 +251,68 @@ namespace daw {
 			return 0;
 		}
 
-		bool operator==( CharRange const & lhs, CharRange const & rhs ) {
+		bool operator==( CharRange const &lhs, CharRange const &rhs ) {
 			return lhs.compare( rhs ) == 0;
 		}
 
-		bool operator==( CharRange const & lhs, boost::string_view const & rhs ) {
+		bool operator==( CharRange const &lhs, boost::string_view const &rhs ) {
 			return lhs == create_char_range( rhs );
 		}
 
-		bool operator!=( CharRange const & lhs, CharRange const & rhs ) {
+		bool operator!=( CharRange const &lhs, CharRange const &rhs ) {
 			return lhs.compare( rhs ) != 0;
 		}
 
-		bool operator<( CharRange const & lhs, CharRange const & rhs ) {
+		bool operator<( CharRange const &lhs, CharRange const &rhs ) {
 			return lhs.compare( rhs ) < 0;
 		}
 
-		bool operator>( CharRange const & lhs, CharRange const & rhs ) {
+		bool operator>( CharRange const &lhs, CharRange const &rhs ) {
 			return lhs.compare( rhs ) > 0;
 		}
 
-		bool operator<=( CharRange const & lhs, CharRange const & rhs ) {
+		bool operator<=( CharRange const &lhs, CharRange const &rhs ) {
 			return lhs.compare( rhs ) <= 0;
 		}
 
-		bool operator>=( CharRange const & lhs, CharRange const & rhs ) {
+		bool operator>=( CharRange const &lhs, CharRange const &rhs ) {
 			return lhs.compare( rhs ) >= 0;
 		}
 
 		std::u32string to_u32string( UTFIterator first, UTFIterator last ) {
 			std::u32string result;
-			std::transform( first, last, std::back_inserter( result ), []( auto c ) {
-				return static_cast<char32_t>( c );
-			} );
+			std::transform( first, last, std::back_inserter( result ),
+			                []( auto c ) { return static_cast<char32_t>( c ); } );
 			return result;
 		}
-	}	// namespace range
+	} // namespace range
 
 	namespace {
 		template<typename Container>
-		std::string copy_to_string( Container const & c ) {
+		std::string copy_to_string( Container const &c ) {
 			std::string result;
 			std::copy( std::begin( c ), std::end( c ), std::back_inserter( result ) );
 			return result;
 		}
 
-		std::string copy_to_string( char const * const str ) {
-			return std::string{ str };
+		std::string copy_to_string( char const *const str ) {
+			return std::string{str};
 		}
 
-	}
+	} // namespace
 
-	utf_string::utf_string( ):
-			m_values{ },
-			m_range{ daw::range::create_char_range( m_values ) } { }
+	utf_string::utf_string( ) : m_values{}, m_range{daw::range::create_char_range( m_values )} {}
 
-	utf_string::utf_string( boost::string_view other ):
-			m_values{ copy_to_string( other ) },
-			m_range{ daw::range::create_char_range( m_values ) } { }
+	utf_string::utf_string( boost::string_view other )
+	    : m_values{copy_to_string( other )}, m_range{daw::range::create_char_range( m_values )} {}
 
-	utf_string::utf_string( daw::range::CharRange other ):
-			m_values{ copy_to_string( other ) },
-			m_range{ daw::range::create_char_range( m_values ) } { }
+	utf_string::utf_string( daw::range::CharRange other )
+	    : m_values{copy_to_string( other )}, m_range{daw::range::create_char_range( m_values )} {}
 
-	utf_string::utf_string( utf_string const & other ):
-			m_values{ other.m_values },
-			m_range{ daw::range::create_char_range( m_values ) } { }
+	utf_string::utf_string( utf_string const &other )
+	    : m_values{other.m_values}, m_range{daw::range::create_char_range( m_values )} {}
 
-	utf_string & utf_string::operator=( utf_string const & rhs ) {
+	utf_string &utf_string::operator=( utf_string const &rhs ) {
 		if( this != &rhs ) {
 			m_values = rhs.m_values;
 			m_range = daw::range::create_char_range( m_values );
@@ -333,9 +320,8 @@ namespace daw {
 		return *this;
 	}
 
-	utf_string::utf_string( char const * other ): 
-			m_values{ copy_to_string( other ) },
-			m_range{ daw::range::create_char_range( m_values ) } { }
+	utf_string::utf_string( char const *other )
+	    : m_values{copy_to_string( other )}, m_range{daw::range::create_char_range( m_values )} {}
 
 	utf_string::const_iterator utf_string::begin( ) const {
 		return m_range.begin( );
@@ -353,15 +339,15 @@ namespace daw {
 		return m_range.empty( );
 	}
 
-	utf_string::~utf_string( ) { }
+	utf_string::~utf_string( ) {}
 
-	void utf_string::swap( utf_string & rhs ) noexcept {
+	void utf_string::swap( utf_string &rhs ) noexcept {
 		using std::swap;
 		swap( m_values, rhs.m_values );
 		swap( m_range, rhs.m_range );
 	}
 
-	void swap( utf_string & lhs, utf_string & rhs ) noexcept {
+	void swap( utf_string &lhs, utf_string &rhs ) noexcept {
 		lhs.swap( rhs );
 	}
 
@@ -373,23 +359,23 @@ namespace daw {
 		return m_range.raw_end( );
 	}
 
-	utf_string & utf_string::operator=( boost::string_view rhs ) {
+	utf_string &utf_string::operator=( boost::string_view rhs ) {
 		using std::swap;
-		utf_string tmp{ rhs };
+		utf_string tmp{rhs};
 		swap( *this, tmp );
 		return *this;
 	}
 
-	utf_string & utf_string::operator=( char const * rhs ) {
+	utf_string &utf_string::operator=( char const *rhs ) {
 		using std::swap;
-		utf_string tmp{ rhs };
+		utf_string tmp{rhs};
 		swap( *this, tmp );
 		return *this;
 	}
 
-	utf_string & utf_string::operator=( std::string const & rhs ) {
+	utf_string &utf_string::operator=( std::string const &rhs ) {
 		using std::swap;
-		utf_string tmp{ rhs };
+		utf_string tmp{rhs};
 		swap( *this, tmp );
 		return *this;
 	}
@@ -399,10 +385,10 @@ namespace daw {
 	}
 
 	utf_string utf_string::substr( size_t pos, size_t length ) const {
-		return utf_string{ m_range.substr( pos, length ) };
+		return utf_string{m_range.substr( pos, length )};
 	}
 
-	std::string const & utf_string::to_string( ) const {
+	std::string const &utf_string::to_string( ) const {
 		return m_values;
 	}
 
@@ -410,62 +396,59 @@ namespace daw {
 		return m_range.to_u32string( );
 	}
 
-	range::CharRange const & utf_string::char_range( ) const {
+	range::CharRange const &utf_string::char_range( ) const {
 		return m_range;
 	}
 
-	int utf_string::compare( utf_string const & rhs ) const {
+	int utf_string::compare( utf_string const &rhs ) const {
 		return m_range.compare( rhs.m_range );
 	}
 
-	bool operator==( utf_string const & lhs, utf_string const & rhs ) {
+	bool operator==( utf_string const &lhs, utf_string const &rhs ) {
 		return lhs.compare( rhs ) == 0;
 	}
 
-	bool operator!=( utf_string const & lhs, utf_string const & rhs ) {
+	bool operator!=( utf_string const &lhs, utf_string const &rhs ) {
 		return lhs.compare( rhs ) != 0;
 	}
 
-	bool operator<( utf_string const & lhs, utf_string const & rhs ) {
+	bool operator<( utf_string const &lhs, utf_string const &rhs ) {
 		return lhs.compare( rhs ) < 0;
 	}
 
-	bool operator>( utf_string const & lhs, utf_string const & rhs ) {
+	bool operator>( utf_string const &lhs, utf_string const &rhs ) {
 		return lhs.compare( rhs ) > 0;
 	}
 
-	bool operator<=( utf_string const & lhs, utf_string const & rhs ) {
+	bool operator<=( utf_string const &lhs, utf_string const &rhs ) {
 		return lhs.compare( rhs ) <= 0;
 	}
 
-	bool operator>=( utf_string const & lhs, utf_string const & rhs ) {
+	bool operator>=( utf_string const &lhs, utf_string const &rhs ) {
 		return lhs.compare( rhs ) >= 0;
 	}
 
-
-	std::string to_string( utf_string const & str ) {
+	std::string to_string( utf_string const &str ) {
 		return str.to_string( );
 	}
 
-	boost::string_view to_string_view( utf_string const & str ) {
+	boost::string_view to_string_view( utf_string const &str ) {
 		return to_string_view( str.char_range( ) );
 	}
 
-	std::ostream & operator<<( std::ostream & os, utf_string const & value ) {
+	std::ostream &operator<<( std::ostream &os, utf_string const &value ) {
 		os << value.char_range( );
 		return os;
 	}
 
-
-	std::string from_u32string( std::u32string const & other ) {
+	std::string from_u32string( std::u32string const &other ) {
 		std::string result;
 		utf8::unchecked::utf32to8( other.begin( ), other.end( ), std::back_inserter( result ) );
 		return result;
 	}
-}	// namespace daw
+} // namespace daw
 
-std::string to_string( daw::utf_string const & str ) {
+std::string to_string( daw::utf_string const &str ) {
 	return str.to_string( );
 }
-
 
