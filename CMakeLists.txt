@@ -2,6 +2,8 @@ cmake_minimum_required( VERSION 2.8.12 )
 
 project( char_range_prj )
 
+include( ExternalProject )
+
 find_package( Boost 1.58.0 COMPONENTS system filesystem regex unit_test_framework iostreams REQUIRED )
 
 add_definitions( -DBOOST_TEST_DYN_LINK -DBOOST_ALL_NO_LIB -DBOOST_ALL_DYN_LINK ) 
@@ -18,6 +20,18 @@ ELSE( )
 		set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 	endif( )
 ENDIF()
+
+externalproject_add( 
+	header_libraries_prj
+	GIT_REPOSITORY "https://github.com/beached/header_libraries.git"
+	GIT_TAG "master"
+	SOURCE_DIR "${CMAKE_BINARY_DIR}/deps/headlibs"
+	INSTALL_DIR "${CMAKE_BINARY_DIR}/install"
+	CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/install
+)
+
+include_directories( SYSTEM "${CMAKE_BINARY_DIR}/install/include" )
+link_directories( "${CMAKE_BINARY_DIR}/install/lib" )
 
 set( HEADER_FOLDER "include" )
 set( SOURCE_FOLDER "src" )
@@ -37,6 +51,7 @@ include_directories( SYSTEM ${Boost_INCLUDE_DIRS} )
 link_directories( ${Boost_LIBRARY_DIRS} )
 
 add_library( char_range STATIC ${HEADER_FILES} ${SOURCE_FILES} )
+add_dependencies( char_range header_libraries_prj )
 
 install( TARGETS char_range DESTINATION lib )
 

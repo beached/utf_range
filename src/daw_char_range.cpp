@@ -22,10 +22,11 @@
 
 #include "daw_char_range.h"
 
-#include <boost/utility/string_view.hpp>
 #include <cassert>
 #include <cstring>
 #include <string>
+
+#include <daw/daw_string_view.h>
 
 namespace daw {
 	namespace range {
@@ -183,7 +184,7 @@ namespace daw {
 			return {first, last};
 		}
 
-		CharRange create_char_range( boost::string_view str ) {
+		CharRange create_char_range( daw::string_view str ) {
 			UTFIterator it_begin( str.begin( ) );
 			UTFIterator it_end( str.end( ) );
 			return {it_begin, it_end};
@@ -214,17 +215,17 @@ namespace daw {
 			return os;
 		}
 
-		boost::string_view CharRange::to_string_view( ) const {
+		daw::string_view CharRange::to_string_view( ) const {
 			auto const &it_begin = begin( ).base( );
 			auto const sz = std::distance( it_begin, end( ).base( ) );
 			return {it_begin, static_cast<size_t>( sz )};
 		}
 
-		boost::string_view to_string_view( CharRange const &str ) {
+		daw::string_view to_string_view( CharRange const &str ) {
 			return str.to_string_view( );
 		}
 
-		boost::string_view to_string_view( utf_string const &str ) {
+		daw::string_view to_string_view( utf_string const &str ) {
 			return to_string_view( str.char_range( ) );
 		}
 
@@ -255,7 +256,7 @@ namespace daw {
 			return lhs.compare( rhs ) == 0;
 		}
 
-		bool operator==( CharRange const &lhs, boost::string_view const &rhs ) {
+		bool operator==( CharRange const &lhs, daw::string_view const &rhs ) {
 			return lhs == create_char_range( rhs );
 		}
 
@@ -303,7 +304,7 @@ namespace daw {
 
 	utf_string::utf_string( ) : m_values{}, m_range{daw::range::create_char_range( m_values )} {}
 
-	utf_string::utf_string( boost::string_view other )
+	utf_string::utf_string( daw::string_view other )
 	    : m_values{copy_to_string( other )}, m_range{daw::range::create_char_range( m_values )} {}
 
 	utf_string::utf_string( daw::range::CharRange other )
@@ -359,7 +360,7 @@ namespace daw {
 		return m_range.raw_end( );
 	}
 
-	utf_string &utf_string::operator=( boost::string_view rhs ) {
+	utf_string &utf_string::operator=( daw::string_view rhs ) {
 		using std::swap;
 		utf_string tmp{rhs};
 		swap( *this, tmp );
@@ -432,7 +433,7 @@ namespace daw {
 		return str.to_string( );
 	}
 
-	boost::string_view to_string_view( utf_string const &str ) {
+	daw::string_view to_string_view( utf_string const &str ) {
 		return to_string_view( str.char_range( ) );
 	}
 
