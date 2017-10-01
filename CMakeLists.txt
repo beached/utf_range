@@ -53,12 +53,17 @@ link_directories( ${Boost_LIBRARY_DIRS} )
 add_library( char_range STATIC ${HEADER_FILES} ${SOURCE_FILES} )
 add_dependencies( char_range header_libraries_prj )
 
+enable_testing( )
+#set( CMAKE_CTEST_COMMAND ctest -V )
+add_custom_target( check COMMAND ${CMAKE_CTEST_COMMAND} )
+
 install( TARGETS char_range DESTINATION lib )
 
 install( DIRECTORY ${HEADER_FOLDER}/ DESTINATION include/daw/char_range )
 install( DIRECTORY third_party/include/ DESTINATION include )
 
-add_executable( char_range_test_bin ${TEST_FOLDER}/daw_char_range_test.cpp ${HEADER_FILES} )
+add_executable( char_range_test_bin EXCLUDE_FROM_ALL ${TEST_FOLDER}/daw_char_range_test.cpp ${HEADER_FILES} )
 target_link_libraries( char_range_test_bin char_range ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} )
 add_test( char_range_test, char_range_test_bin )
+add_dependencies( check char_range_test_bin )
 
