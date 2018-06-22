@@ -6,7 +6,8 @@ include( ExternalProject )
 
 find_package( Boost 1.58.0 COMPONENTS system filesystem regex unit_test_framework iostreams REQUIRED )
 
-add_definitions( -DBOOST_TEST_DYN_LINK -DBOOST_ALL_NO_LIB -DBOOST_ALL_DYN_LINK ) 
+add_definitions( -DBOOST_ALL_NO_LIB )
+
 IF( ${CMAKE_CXX_COMPILER_ID} STREQUAL 'MSVC' )
 	add_compile_options( -D_WIN32_WINNT=0x0601 /std:c++latest ) 
 ELSE( )
@@ -21,13 +22,13 @@ ELSE( )
 	endif( )
 ENDIF()
 
-externalproject_add( 
-	header_libraries_prj
-	GIT_REPOSITORY "https://github.com/beached/header_libraries.git"
-	GIT_TAG "master"
-	SOURCE_DIR "${CMAKE_BINARY_DIR}/deps/headlibs"
-	INSTALL_DIR "${CMAKE_BINARY_DIR}/install"
-	CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/install
+externalproject_add(
+    header_libraries_prj
+    GIT_REPOSITORY "https://github.com/beached/header_libraries.git"
+    SOURCE_DIR "${CMAKE_BINARY_DIR}/dependencies/header_libraries"
+    GIT_TAG "master"
+    INSTALL_DIR "${CMAKE_BINARY_DIR}/install"
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/install
 )
 
 include_directories( SYSTEM "${CMAKE_BINARY_DIR}/install/include" )
@@ -46,15 +47,14 @@ set( SOURCE_FILES
 )
 
 include_directories( ${HEADER_FOLDER} )
-include_directories( SYSTEM "third_party/include" )
 include_directories( SYSTEM ${Boost_INCLUDE_DIRS} )
+include_directories( "third_party/include" )
 link_directories( ${Boost_LIBRARY_DIRS} )
 
 add_library( char_range STATIC ${HEADER_FILES} ${SOURCE_FILES} )
 add_dependencies( char_range header_libraries_prj )
 
 enable_testing( )
-#set( CMAKE_CTEST_COMMAND ctest -V )
 add_custom_target( check COMMAND ${CMAKE_CTEST_COMMAND} )
 
 install( TARGETS char_range DESTINATION lib )
@@ -64,6 +64,7 @@ install( DIRECTORY third_party/include/ DESTINATION include )
 
 add_executable( char_range_test_bin EXCLUDE_FROM_ALL ${TEST_FOLDER}/daw_char_range_test.cpp ${HEADER_FILES} )
 target_link_libraries( char_range_test_bin char_range ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} )
+
 add_test( char_range_test, char_range_test_bin )
 add_dependencies( check char_range_test_bin )
 
