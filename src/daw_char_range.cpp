@@ -208,13 +208,6 @@ namespace daw {
 			                   static_cast<size_t>( std::distance( str.begin( ).base( ), str.end( ).base( ) ) )};
 		}
 
-		std::ostream &operator<<( std::ostream &os, CharRange const &value ) {
-			for( auto it = value.begin( ).base( ); it != value.end( ).base( ); ++it ) {
-				os << *it;
-			}
-			return os;
-		}
-
 		daw::string_view CharRange::to_string_view( ) const {
 			auto const &it_begin = begin( ).base( );
 			auto const sz = std::distance( it_begin, end( ).base( ) );
@@ -435,11 +428,6 @@ namespace daw {
 
 	daw::string_view to_string_view( utf_string const &str ) {
 		return to_string_view( str.char_range( ) );
-	}
-
-	std::ostream &operator<<( std::ostream &os, utf_string const &value ) {
-		os << value.char_range( );
-		return os;
 	}
 
 	std::string from_u32string( std::u32string const &other ) {

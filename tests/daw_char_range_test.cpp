@@ -22,7 +22,7 @@
 
 #define BOOST_TEST_MODULE char_range_test 
 
-#include <boost/test/unit_test.hpp>
+#include <daw/boost_test.h>
 #include <iostream>
 
 #include "daw_char_range.h"

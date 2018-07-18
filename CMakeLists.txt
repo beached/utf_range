@@ -32,7 +32,9 @@ externalproject_add(
 )
 
 include_directories( SYSTEM "${CMAKE_BINARY_DIR}/install/include" )
-link_directories( "${CMAKE_BINARY_DIR}/install/lib" )
+#link_directories( "${CMAKE_BINARY_DIR}/install/lib" )
+
+add_definitions( -DBOOST_TEST_DYN_LINK -DBOOST_ALL_NO_LIB -DBOOST_ALL_DYN_LINK )
 
 set( HEADER_FOLDER "include" )
 set( SOURCE_FOLDER "src" )
@@ -64,7 +66,6 @@ install( DIRECTORY third_party/include/ DESTINATION include )
 
 add_executable( char_range_test_bin EXCLUDE_FROM_ALL ${TEST_FOLDER}/daw_char_range_test.cpp ${HEADER_FILES} )
 target_link_libraries( char_range_test_bin char_range ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} )
-
 add_test( char_range_test, char_range_test_bin )
 add_dependencies( check char_range_test_bin )
 

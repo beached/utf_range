@@ -27,6 +27,7 @@
 #include <utf8/unchecked.h>
 
 #include <daw/daw_string_view.h>
+#include <daw/daw_traits.h>
 
 namespace daw {
 	namespace range {
@@ -103,9 +104,18 @@ namespace daw {
 			void clear( CharRange & str );
 			std::string to_string( CharRange const & str );
 
-			std::ostream& operator<<( std::ostream & os, CharRange const & value );
-			
-			daw::string_view to_string_view( CharRange const & str );
+		  template<typename OStream,
+		           std::enable_if_t<daw::traits::is_ostream_like_v<OStream, char>,
+		                            std::nullptr_t> = nullptr>
+		  OStream &operator<<( OStream &os, CharRange const &value ) {
+			  for( auto it = value.begin( ).base( ); it != value.end( ).base( );
+			       ++it ) {
+				  os << *it;
+			  }
+			  return os;
+		  }
+
+		  daw::string_view to_string_view( CharRange const & str );
 
 			bool at_end( CharRange const & range );
 			std::u32string to_u32string( UTFIterator first, UTFIterator last );
@@ -167,7 +177,15 @@ namespace daw {
 	bool operator>=( utf_string const & lhs, utf_string const & rhs );
 	std::string to_string( utf_string const & str );
 	daw::string_view to_string_view( utf_string const & str );
-	std::ostream & operator<<( std::ostream & os, utf_string const & value );
+
+	template<typename OStream,
+	         std::enable_if_t<daw::traits::is_ostream_like_v<OStream, char>,
+	                          std::nullptr_t> = nullptr>
+	OStream &operator<<( OStream &os, utf_string const &value ) {
+		os << value.char_range( );
+		return os;
+	}
+
 }	// namespace daw
 
 std::string to_string( daw::utf_string const & str );
