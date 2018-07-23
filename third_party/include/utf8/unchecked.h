@@ -27,6 +27,7 @@ DEALINGS IN THE SOFTWARE.
 #pragma once
 
 #include "core.h"
+#include <daw/cpp_17.h>
 
 namespace utf8 {
 	namespace unchecked {
@@ -34,19 +35,19 @@ namespace utf8 {
 		constexpr octet_iterator append( uint32_t cp,
 		                                 octet_iterator result ) noexcept {
 			if( cp < 0x80 ) { // one octet
-				*( result++ ) = static_cast<uint8_t>( cp );
+				*( result++ ) = static_cast<int8_t>( cp );
 			} else if( cp < 0x800 ) { // two octets
-				*( result++ ) = static_cast<uint8_t>( ( cp >> 6 ) | 0xc0 );
-				*( result++ ) = static_cast<uint8_t>( ( cp & 0x3f ) | 0x80 );
+				*( result++ ) = static_cast<int8_t>( ( cp >> 6 ) | 0xc0 );
+				*( result++ ) = static_cast<int8_t>( ( cp & 0x3f ) | 0x80 );
 			} else if( cp < 0x10000 ) { // three octets
-				*( result++ ) = static_cast<uint8_t>( ( cp >> 12 ) | 0xe0 );
-				*( result++ ) = static_cast<uint8_t>( ( ( cp >> 6 ) & 0x3f ) | 0x80 );
-				*( result++ ) = static_cast<uint8_t>( ( cp & 0x3f ) | 0x80 );
+				*( result++ ) = static_cast<int8_t>( ( cp >> 12 ) | 0xe0 );
+				*( result++ ) = static_cast<int8_t>( ( ( cp >> 6 ) & 0x3f ) | 0x80 );
+				*( result++ ) = static_cast<int8_t>( ( cp & 0x3f ) | 0x80 );
 			} else { // four octets
-				*( result++ ) = static_cast<uint8_t>( ( cp >> 18 ) | 0xf0 );
-				*( result++ ) = static_cast<uint8_t>( ( ( cp >> 12 ) & 0x3f ) | 0x80 );
-				*( result++ ) = static_cast<uint8_t>( ( ( cp >> 6 ) & 0x3f ) | 0x80 );
-				*( result++ ) = static_cast<uint8_t>( ( cp & 0x3f ) | 0x80 );
+				*( result++ ) = static_cast<int8_t>( ( cp >> 18 ) | 0xf0 );
+				*( result++ ) = static_cast<int8_t>( ( ( cp >> 12 ) & 0x3f ) | 0x80 );
+				*( result++ ) = static_cast<int8_t>( ( ( cp >> 6 ) & 0x3f ) | 0x80 );
+				*( result++ ) = static_cast<int8_t>( ( cp & 0x3f ) | 0x80 );
 			}
 			return std::move( result );
 		}
@@ -220,13 +221,13 @@ namespace utf8 {
 			}
 
 			constexpr iterator &operator++( ) noexcept {
-				::std::advance( it, utf8::internal::sequence_length( it ) );
+				daw::advance( it, utf8::internal::sequence_length( it ) );
 				return *this;
 			}
 
 			constexpr iterator operator++( int ) noexcept {
 				iterator temp = *this;
-				::std::advance( it, utf8::internal::sequence_length( it ) );
+				daw::advance( it, utf8::internal::sequence_length( it ) );
 				return temp;
 			}
 
@@ -243,13 +244,13 @@ namespace utf8 {
 
 			template<typename Distance>
 			constexpr iterator &operator+=( Distance const n ) noexcept {
-				std::advance( *this, static_cast<difference_type>( n ) );
+				daw::advance( *this, static_cast<difference_type>( n ) );
 				return *this;
 			}
 
 			template<typename Distance>
 			constexpr iterator &operator-=( Distance const n ) noexcept {
-				std::advance( *this, -n );
+				daw::advance( *this, -n );
 				return *this;
 			}
 

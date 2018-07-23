@@ -1,16 +1,16 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2016 Darrell Wright
+// Copyright (c) 2014-2018 Darrell Wright
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files( the "Software" ), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
-// copies of the Software, and to permit persons to whom the Software is
+// of this software and associated documentation files( the "Software" ), to
+// deal in the Software without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense, and / or
+// sell copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -30,253 +30,34 @@
 
 namespace daw {
 	namespace range {
-		CharRange::CharRange( ) noexcept : m_begin{nullptr}, m_end{nullptr}, m_size{0} {}
-
-		CharRange::CharRange( CharRange::iterator Begin, CharRange::iterator End )
-		    : m_begin( Begin ), m_end( End ), m_size( static_cast<size_t>( std::distance( Begin, End ) ) ) {}
-
-		CharRange::~CharRange( ) {}
-
-		CharRange::iterator CharRange::begin( ) noexcept {
-			return m_begin;
-		}
-
-		CharRange::const_iterator CharRange::begin( ) const noexcept {
-			return m_begin;
-		}
-
-		CharRange::iterator CharRange::end( ) noexcept {
-			return m_end;
-		}
-
-		CharRange::const_iterator CharRange::end( ) const noexcept {
-			return m_end;
-		}
-
-		size_t CharRange::size( ) const noexcept {
-			return m_size;
-		}
-
-		bool CharRange::empty( ) const noexcept {
-			return m_size == 0;
-		}
-
-		CharRange &CharRange::operator++( ) {
-			++m_begin;
-			--m_size;
-			return *this;
-		}
-
-		CharRange CharRange::operator++( int ) {
-			CharRange result( *this );
-			++( *this );
-			return result;
-		}
-
-		void CharRange::advance( size_t const n ) {
-			assert( n <= m_size );
-			utf8::unchecked::advance( m_begin, n );
-			m_size -= n;
-		}
-
-		void CharRange::safe_advance( size_t const count ) {
-			if( count <= m_size ) {
-				advance( count );
-			} else {
-				advance( m_size );
-			}
-		}
-
-		CharRange &CharRange::set( CharRange::iterator Begin, CharRange::iterator End,
-		                           CharRange::difference_type Size ) {
-			m_begin = Begin;
-			m_end = End;
-			if( Size < 0 ) {
-				m_size = static_cast<size_t>( std::distance( m_begin, m_end ) );
-			} else {
-				m_size = static_cast<size_t>( Size );
-			}
-			return *this;
-		}
-
-		CharRange &CharRange::set_begin( CharRange::iterator Begin, CharRange::difference_type Size ) {
-			return set( Begin, this->m_end, Size );
-		}
-
-		CharRange &CharRange::set_end( CharRange::iterator End, CharRange::difference_type Size ) {
-			return set( this->m_begin, End, Size );
-		}
-
-		CharRange operator+( CharRange range, size_t const n ) {
-			range.advance( n );
-			return range;
-		}
-
-		CharRange &CharRange::operator+=( size_t const n ) {
-			advance( n );
-			return *this;
-		}
-
-		CharIterator CharRange::raw_begin( ) const {
-			return m_begin.base( );
-		}
-
-		CharIterator CharRange::raw_end( ) const {
-			return m_end.base( );
-		}
-
-		size_t CharRange::raw_size( ) const {
-			return static_cast<size_t>( std::distance( m_begin.base( ), m_end.base( ) ) );
-		}
-
-		bool at_end( CharRange const &range ) {
-			return range.size( ) == 0;
-		}
-
-		CharRange CharRange::copy( ) const {
-			return *this;
-		}
-
-		CharRange CharRange::substr( size_t pos, size_t length ) const {
-			assert( pos + length <= size( ) );
-			auto result = copy( );
-			auto f = result.begin( ) + pos;
-			auto l = f + length;
-			return result.set( f, l );
-		}
-
-		std::u32string CharRange::to_u32string( ) const {
-			std::u32string result;
-			std::transform( begin( ), end( ), std::back_inserter( result ),
-			                []( auto c ) { return static_cast<char32_t>( c ); } );
-
-			return result;
-		}
-
-		std::string CharRange::to_raw_u8string( ) const {
-			return std::string( m_begin.base( ), m_end.base( ) );
-		}
-
-		size_t hash_sequence( CharIterator first, CharIterator const last ) {
-// FNV-1a hash function for bytes in [fist, last], see http://www.isthe.com/chongo/tech/comp/fnv/index.html
-#if defined( _WIN64 ) || defined( __amd64__ )
-			static_assert( sizeof( size_t ) == 8, "This code is for 64-bit size_t." );
-			size_t const fnv_offset_basis = 14695981039346656037ULL;
-			size_t const fnv_prime = 1099511628211ULL;
-
-#elif defined( _WIN32 ) || defined( __i386__ )
-			static_assert( sizeof( size_t ) == 4, "This code is for 32-bit size_t." );
-			size_t const fnv_offset_basis = 2166136261U;
-			size_t const fnv_prime = 16777619U;
-#else
-#error "Unknown platform for hash"
-#endif
-
-			auto result = fnv_offset_basis;
-			for( ; first <= last; ++first ) {
-				result ^= static_cast<size_t>( *first );
-				result *= fnv_prime;
-			}
-			return result;
-		}
-
-		CharRange create_char_range( UTFIterator first, UTFIterator last ) {
-			return {first, last};
-		}
-
-		CharRange create_char_range( daw::string_view str ) {
-			UTFIterator it_begin( str.begin( ) );
-			UTFIterator it_end( str.end( ) );
-			return {it_begin, it_end};
-		}
-
-		CharRange create_char_range( CharIterator first, CharIterator last ) {
-			UTFIterator it_begin( first );
-			UTFIterator it_end( last );
-			return {it_begin, it_end};
-		}
-
-		CharRange create_char_range( CharIterator first ) {
-			return create_char_range( first, first + strlen( first ) );
-		}
-		void clear( CharRange &str ) {
-			str.advance( str.size( ) );
-		}
-
 		std::string to_string( CharRange const &str ) {
 			return std::string{str.begin( ).base( ),
-			                   static_cast<size_t>( std::distance( str.begin( ).base( ), str.end( ).base( ) ) )};
+			                   static_cast<size_t>( std::distance(
+			                     str.begin( ).base( ), str.end( ).base( ) ) )};
 		}
 
-		daw::string_view CharRange::to_string_view( ) const {
-			auto const &it_begin = begin( ).base( );
-			auto const sz = std::distance( it_begin, end( ).base( ) );
-			return {it_begin, static_cast<size_t>( sz )};
-		}
-
-		daw::string_view to_string_view( CharRange const &str ) {
-			return str.to_string_view( );
-		}
 
 		daw::string_view to_string_view( utf_string const &str ) {
 			return to_string_view( str.char_range( ) );
-		}
-
-		int CharRange::compare( CharRange const &rhs ) const {
-			auto it_lhs = begin( );
-			auto it_rhs = rhs.begin( );
-			while( it_lhs != end( ) && it_rhs != rhs.end( ) ) {
-				auto const l = *it_lhs;
-				auto const r = *it_rhs;
-				if( l != r ) {
-					if( l < r ) {
-						return -1;
-					}
-					return 1;
-				}
-				++it_lhs;
-				++it_rhs;
-			}
-			if( it_lhs != end( ) ) {
-				return 1;
-			} else if( it_rhs != end( ) ) {
-				return -1;
-			}
-			return 0;
-		}
-
-		bool operator==( CharRange const &lhs, CharRange const &rhs ) {
-			return lhs.compare( rhs ) == 0;
-		}
-
-		bool operator==( CharRange const &lhs, daw::string_view const &rhs ) {
-			return lhs == create_char_range( rhs );
-		}
-
-		bool operator!=( CharRange const &lhs, CharRange const &rhs ) {
-			return lhs.compare( rhs ) != 0;
-		}
-
-		bool operator<( CharRange const &lhs, CharRange const &rhs ) {
-			return lhs.compare( rhs ) < 0;
-		}
-
-		bool operator>( CharRange const &lhs, CharRange const &rhs ) {
-			return lhs.compare( rhs ) > 0;
-		}
-
-		bool operator<=( CharRange const &lhs, CharRange const &rhs ) {
-			return lhs.compare( rhs ) <= 0;
-		}
-
-		bool operator>=( CharRange const &lhs, CharRange const &rhs ) {
-			return lhs.compare( rhs ) >= 0;
 		}
 
 		std::u32string to_u32string( UTFIterator first, UTFIterator last ) {
 			std::u32string result;
 			std::transform( first, last, std::back_inserter( result ),
 			                []( auto c ) { return static_cast<char32_t>( c ); } );
+			return result;
+		}
+
+		std::string CharRange::to_raw_u8string( ) const noexcept {
+			return std::string( m_begin.base( ), m_end.base( ) );
+		}
+
+		std::u32string CharRange::to_u32string( ) const noexcept {
+			auto result = std::u32string( );
+			daw::algorithm::transform(
+			  begin( ), end( ), std::back_inserter( result ),
+			  []( auto c ) { return static_cast<char32_t>( c ); } );
+
 			return result;
 		}
 	} // namespace range
@@ -295,16 +76,21 @@ namespace daw {
 
 	} // namespace
 
-	utf_string::utf_string( ) : m_values{}, m_range{daw::range::create_char_range( m_values )} {}
+	utf_string::utf_string( )
+	  : m_values{}
+	  , m_range{daw::range::create_char_range( m_values )} {}
 
 	utf_string::utf_string( daw::string_view other )
-	    : m_values{copy_to_string( other )}, m_range{daw::range::create_char_range( m_values )} {}
+	  : m_values{copy_to_string( other )}
+	  , m_range{daw::range::create_char_range( m_values )} {}
 
 	utf_string::utf_string( daw::range::CharRange other )
-	    : m_values{copy_to_string( other )}, m_range{daw::range::create_char_range( m_values )} {}
+	  : m_values{copy_to_string( other )}
+	  , m_range{daw::range::create_char_range( m_values )} {}
 
 	utf_string::utf_string( utf_string const &other )
-	    : m_values{other.m_values}, m_range{daw::range::create_char_range( m_values )} {}
+	  : m_values{other.m_values}
+	  , m_range{daw::range::create_char_range( m_values )} {}
 
 	utf_string &utf_string::operator=( utf_string const &rhs ) {
 		if( this != &rhs ) {
@@ -315,7 +101,8 @@ namespace daw {
 	}
 
 	utf_string::utf_string( char const *other )
-	    : m_values{copy_to_string( other )}, m_range{daw::range::create_char_range( m_values )} {}
+	  : m_values{copy_to_string( other )}
+	  , m_range{daw::range::create_char_range( m_values )} {}
 
 	utf_string::const_iterator utf_string::begin( ) const {
 		return m_range.begin( );
@@ -332,8 +119,6 @@ namespace daw {
 	bool utf_string::empty( ) const {
 		return m_range.empty( );
 	}
-
-	utf_string::~utf_string( ) {}
 
 	void utf_string::swap( utf_string &rhs ) noexcept {
 		using std::swap;
@@ -432,7 +217,8 @@ namespace daw {
 
 	std::string from_u32string( std::u32string const &other ) {
 		std::string result;
-		utf8::unchecked::utf32to8( other.begin( ), other.end( ), std::back_inserter( result ) );
+		utf8::unchecked::utf32to8( other.begin( ), other.end( ),
+		                           std::back_inserter( result ) );
 		return result;
 	}
 } // namespace daw
@@ -440,4 +226,3 @@ namespace daw {
 std::string to_string( daw::utf_string const &str ) {
 	return str.to_string( );
 }
-
