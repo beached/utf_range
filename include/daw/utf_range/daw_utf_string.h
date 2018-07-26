@@ -55,9 +55,9 @@ namespace daw {
 		explicit utf_string( char const *other );
 
 		template<size_t N>
-		utf_string( char const (&str)[N] )
-		: m_values( str, N-1 )
-		, m_range(daw::range::create_char_range( m_values )) {}
+		utf_string( char const ( &str )[N] )
+		  : m_values( str, N - 1 )
+		  , m_range( daw::range::create_char_range( m_values ) ) {}
 
 		utf_string &operator=( utf_string const &rhs );
 		utf_string &operator=( daw::string_view rhs );
@@ -65,7 +65,7 @@ namespace daw {
 		utf_string &operator=( std::string const &rhs );
 
 		template<size_t N>
-		utf_string &operator=( char const (&str)[N] ) {
+		utf_string &operator=( char const ( &str )[N] ) {
 			m_values = str;
 			m_range = daw::range::create_char_range( m_values );
 			return *this;
@@ -76,27 +76,27 @@ namespace daw {
 		utf_string( utf_string && ) noexcept = default;
 		utf_string &operator=( utf_string && ) noexcept = default;
 
-		const_iterator begin( ) const;
-		const_iterator end( ) const;
-		size_t size( ) const;
-		bool empty( ) const;
-		range::char_iterator raw_begin( ) const;
-		range::char_iterator raw_end( ) const;
-		size_t raw_size( ) const;
+		const_iterator begin( ) const noexcept;
+		const_iterator end( ) const noexcept;
+		size_t size( ) const noexcept;
+		bool empty( ) const noexcept;
+		range::char_iterator raw_begin( ) const noexcept;
+		range::char_iterator raw_end( ) const noexcept;
+		size_t raw_size( ) const noexcept;
 		utf_string substr( size_t pos, size_t length ) const;
 
-		std::string const &to_string( ) const;
+		std::string const &to_string( ) const noexcept;
 		std::u32string to_u32string( ) const;
-		range::utf_range const &char_range( ) const;
-		int compare( utf_string const &rhs ) const;
+		range::utf_range const &utf_range( ) const noexcept;
+		int compare( utf_string const &rhs ) const noexcept;
 	}; // utf_string
 
-	bool operator==( utf_string const &lhs, utf_string const &rhs );
-	bool operator!=( utf_string const &lhs, utf_string const &rhs );
-	bool operator<( utf_string const &lhs, utf_string const &rhs );
-	bool operator>( utf_string const &lhs, utf_string const &rhs );
-	bool operator<=( utf_string const &lhs, utf_string const &rhs );
-	bool operator>=( utf_string const &lhs, utf_string const &rhs );
+	bool operator==( utf_string const &lhs, utf_string const &rhs ) noexcept;
+	bool operator!=( utf_string const &lhs, utf_string const &rhs ) noexcept;
+	bool operator<( utf_string const &lhs, utf_string const &rhs ) noexcept;
+	bool operator>( utf_string const &lhs, utf_string const &rhs ) noexcept;
+	bool operator<=( utf_string const &lhs, utf_string const &rhs ) noexcept;
+	bool operator>=( utf_string const &lhs, utf_string const &rhs ) noexcept;
 	std::string to_string( utf_string const &str );
 	daw::string_view to_string_view( utf_string const &str );
 
@@ -104,12 +104,13 @@ namespace daw {
 	         std::enable_if_t<daw::traits::is_ostream_like_v<OStream, char>,
 	                          std::nullptr_t> = nullptr>
 	OStream &operator<<( OStream &os, utf_string const &value ) {
-		os << value.char_range( );
+		os << value.utf_range( );
 		return os;
 	}
 } // namespace daw
 
 std::string to_string( daw::utf_string const &str );
+std::string to_string( daw::utf_string &&str );
 
 namespace std {
 	template<>

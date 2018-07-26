@@ -28,9 +28,9 @@
 #include "daw/utf_range/daw_utf_range.h"
 
 BOOST_AUTO_TEST_CASE( char_range_test_001 ) {
-	constexpr auto const rng = daw::range::create_char_range( u8"Приве́т नमस्ते שָׁלוֹם" );
+	constexpr auto const rng =
+	  daw::range::create_char_range( u8"Приве́т नमस्ते שָׁלוֹם" );
 	for( auto c : rng ) {
 		std::cout << c << '\n';
 	}
 }
-

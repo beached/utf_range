@@ -40,7 +40,8 @@ namespace daw {
 
 		constexpr size_t hash_sequence( char_iterator first,
 		                                char_iterator const last ) noexcept {
-			return daw::fnv1a_hash( first, static_cast<size_t>(daw::distance( first, last )) );
+			return daw::fnv1a_hash(
+			  first, static_cast<size_t>( daw::distance( first, last ) ) );
 		}
 
 		struct utf_range {
@@ -228,8 +229,8 @@ namespace daw {
 		}
 
 		template<size_t N>
-		constexpr utf_range create_char_range( char const( &str )[N] ) noexcept {
-			return { str, N-1 };
+		constexpr utf_range create_char_range( char const ( &str )[N] ) noexcept {
+			return {str, N - 1};
 		}
 
 		constexpr utf_range create_char_range( char_iterator first,
@@ -314,7 +315,8 @@ namespace daw {
 namespace std {
 	template<>
 	struct hash<daw::range::utf_range> {
-		constexpr size_t operator( )( daw::range::utf_range const &value ) const noexcept {
+		constexpr size_t operator( )( daw::range::utf_range const &value ) const
+		  noexcept {
 			return daw::range::hash_sequence( value.begin( ).base( ),
 			                                  value.end( ).base( ) );
 		}

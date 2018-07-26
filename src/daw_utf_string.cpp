@@ -32,32 +32,33 @@ namespace daw {
 	namespace {
 		template<typename Container>
 		std::string copy_to_string( Container const &c ) {
-			std::string result;
-			std::copy( std::begin( c ), std::end( c ), std::back_inserter( result ) );
+			auto result = std::string( );
+			std::copy( std::cbegin( c ), std::cend( c ),
+			           std::back_inserter( result ) );
 			return result;
 		}
 
 		std::string copy_to_string( char const *const str ) {
-			return std::string{str};
+			return std::string( str );
 		}
 
 	} // namespace
 
 	utf_string::utf_string( )
-	  : m_values{}
-	  , m_range{daw::range::create_char_range( m_values )} {}
+	  : m_values( )
+	  , m_range( daw::range::create_char_range( m_values ) ) {}
 
 	utf_string::utf_string( daw::string_view other )
-	  : m_values{copy_to_string( other )}
-	  , m_range{daw::range::create_char_range( m_values )} {}
+	  : m_values( copy_to_string( other ) )
+	  , m_range( daw::range::create_char_range( m_values ) ) {}
 
 	utf_string::utf_string( daw::range::utf_range other )
-	  : m_values{copy_to_string( other )}
-	  , m_range{daw::range::create_char_range( m_values )} {}
+	  : m_values( copy_to_string( other ) )
+	  , m_range( daw::range::create_char_range( m_values ) ) {}
 
 	utf_string::utf_string( utf_string const &other )
-	  : m_values{other.m_values}
-	  , m_range{daw::range::create_char_range( m_values )} {}
+	  : m_values( other.m_values )
+	  , m_range( daw::range::create_char_range( m_values ) ) {}
 
 	utf_string &utf_string::operator=( utf_string const &rhs ) {
 		if( this != &rhs ) {
@@ -71,52 +72,52 @@ namespace daw {
 	  : m_values{copy_to_string( other )}
 	  , m_range{daw::range::create_char_range( m_values )} {}
 
-	utf_string::const_iterator utf_string::begin( ) const {
+	utf_string::const_iterator utf_string::begin( ) const noexcept {
 		return m_range.begin( );
 	}
 
-	utf_string::const_iterator utf_string::end( ) const {
+	utf_string::const_iterator utf_string::end( ) const noexcept {
 		return m_range.end( );
 	}
 
-	size_t utf_string::size( ) const {
+	size_t utf_string::size( ) const noexcept {
 		return m_range.size( );
 	}
 
-	bool utf_string::empty( ) const {
+	bool utf_string::empty( ) const noexcept {
 		return m_range.empty( );
 	}
 
-	range::char_iterator utf_string::raw_begin( ) const {
+	range::char_iterator utf_string::raw_begin( ) const noexcept {
 		return m_range.raw_begin( );
 	}
 
-	range::char_iterator utf_string::raw_end( ) const {
+	range::char_iterator utf_string::raw_end( ) const noexcept {
 		return m_range.raw_end( );
 	}
 
 	utf_string &utf_string::operator=( daw::string_view rhs ) {
+		auto tmp = utf_string( rhs );
 		using std::swap;
-		utf_string tmp{rhs};
 		swap( *this, tmp );
 		return *this;
 	}
 
 	utf_string &utf_string::operator=( char const *rhs ) {
+		auto tmp = utf_string( rhs );
 		using std::swap;
-		utf_string tmp{rhs};
 		swap( *this, tmp );
 		return *this;
 	}
 
 	utf_string &utf_string::operator=( std::string const &rhs ) {
+		auto tmp = utf_string( rhs );
 		using std::swap;
-		utf_string tmp{rhs};
 		swap( *this, tmp );
 		return *this;
 	}
 
-	size_t utf_string::raw_size( ) const {
+	size_t utf_string::raw_size( ) const noexcept {
 		return m_range.raw_size( );
 	}
 
@@ -124,7 +125,7 @@ namespace daw {
 		return utf_string{m_range.substr( pos, length )};
 	}
 
-	std::string const &utf_string::to_string( ) const {
+	std::string const &utf_string::to_string( ) const noexcept {
 		return m_values;
 	}
 
@@ -132,35 +133,35 @@ namespace daw {
 		return m_range.to_u32string( );
 	}
 
-	range::utf_range const &utf_string::char_range( ) const {
+	range::utf_range const &utf_string::utf_range( ) const noexcept {
 		return m_range;
 	}
 
-	int utf_string::compare( utf_string const &rhs ) const {
+	int utf_string::compare( utf_string const &rhs ) const noexcept {
 		return m_range.compare( rhs.m_range );
 	}
 
-	bool operator==( utf_string const &lhs, utf_string const &rhs ) {
+	bool operator==( utf_string const &lhs, utf_string const &rhs ) noexcept {
 		return lhs.compare( rhs ) == 0;
 	}
 
-	bool operator!=( utf_string const &lhs, utf_string const &rhs ) {
+	bool operator!=( utf_string const &lhs, utf_string const &rhs ) noexcept {
 		return lhs.compare( rhs ) != 0;
 	}
 
-	bool operator<( utf_string const &lhs, utf_string const &rhs ) {
+	bool operator<( utf_string const &lhs, utf_string const &rhs ) noexcept {
 		return lhs.compare( rhs ) < 0;
 	}
 
-	bool operator>( utf_string const &lhs, utf_string const &rhs ) {
+	bool operator>( utf_string const &lhs, utf_string const &rhs ) noexcept {
 		return lhs.compare( rhs ) > 0;
 	}
 
-	bool operator<=( utf_string const &lhs, utf_string const &rhs ) {
+	bool operator<=( utf_string const &lhs, utf_string const &rhs ) noexcept {
 		return lhs.compare( rhs ) <= 0;
 	}
 
-	bool operator>=( utf_string const &lhs, utf_string const &rhs ) {
+	bool operator>=( utf_string const &lhs, utf_string const &rhs ) noexcept {
 		return lhs.compare( rhs ) >= 0;
 	}
 
@@ -169,10 +170,14 @@ namespace daw {
 	}
 
 	daw::string_view to_string_view( utf_string const &str ) {
-		return to_string_view( str.char_range( ) );
+		return to_string_view( str.utf_range( ) );
 	}
 } // namespace daw
 
 std::string to_string( daw::utf_string const &str ) {
 	return str.to_string( );
+}
+
+std::string to_string( daw::utf_string &&str ) {
+	return std::move( str ).to_string( );
 }

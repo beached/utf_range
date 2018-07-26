@@ -60,4 +60,3 @@ namespace daw {
 		return result;
 	}
 } // namespace daw
-
