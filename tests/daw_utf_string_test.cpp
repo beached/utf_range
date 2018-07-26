@@ -25,7 +25,7 @@
 #include <daw/boost_test.h>
 #include <iostream>
 
-#include "daw/char_range/daw_utf_string.h"
+#include "daw/utf_range/daw_utf_string.h"
 
 BOOST_AUTO_TEST_CASE( utf_string_test_001 ) {
 	daw::utf_string b = u8"Приве́т नमस्ते שָׁלוֹם";

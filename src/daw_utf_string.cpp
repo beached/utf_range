@@ -26,7 +26,7 @@
 
 #include <daw/daw_string_view.h>
 
-#include "daw/char_range/daw_utf_string.h"
+#include "daw/utf_range/daw_utf_string.h"
 
 namespace daw {
 	namespace {
@@ -51,7 +51,7 @@ namespace daw {
 	  : m_values{copy_to_string( other )}
 	  , m_range{daw::range::create_char_range( m_values )} {}
 
-	utf_string::utf_string( daw::range::CharRange other )
+	utf_string::utf_string( daw::range::utf_range other )
 	  : m_values{copy_to_string( other )}
 	  , m_range{daw::range::create_char_range( m_values )} {}
 
@@ -87,11 +87,11 @@ namespace daw {
 		return m_range.empty( );
 	}
 
-	range::CharIterator utf_string::raw_begin( ) const {
+	range::char_iterator utf_string::raw_begin( ) const {
 		return m_range.raw_begin( );
 	}
 
-	range::CharIterator utf_string::raw_end( ) const {
+	range::char_iterator utf_string::raw_end( ) const {
 		return m_range.raw_end( );
 	}
 
@@ -132,7 +132,7 @@ namespace daw {
 		return m_range.to_u32string( );
 	}
 
-	range::CharRange const &utf_string::char_range( ) const {
+	range::utf_range const &utf_string::char_range( ) const {
 		return m_range;
 	}
 

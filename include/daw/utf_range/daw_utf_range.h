@@ -34,22 +34,22 @@
 
 namespace daw {
 	namespace range {
-		using CharIterator = char const *;
-		using UTFIterator = utf8::unchecked::iterator<CharIterator>;
-		using UTFValType = UTFIterator::value_type;
+		using char_iterator = char const *;
+		using utf_iterator = utf8::unchecked::iterator<char_iterator>;
+		using utf_val_type = utf_iterator::value_type;
 
-		constexpr size_t hash_sequence( CharIterator first,
-		                                CharIterator const last ) noexcept {
+		constexpr size_t hash_sequence( char_iterator first,
+		                                char_iterator const last ) noexcept {
 			return daw::fnv1a_hash( first, static_cast<size_t>(daw::distance( first, last )) );
 		}
 
-		struct 	CharRange {
-			using iterator = UTFIterator;
-			using const_iterator = UTFIterator const;
-			using reference = UTFIterator::reference;
-			using value_type = UTFIterator::value_type;
+		struct utf_range {
+			using iterator = utf_iterator;
+			using const_iterator = utf_iterator const;
+			using reference = utf_iterator::reference;
+			using value_type = utf_iterator::value_type;
 			using const_reference = value_type const &;
-			using difference_type = UTFIterator::difference_type;
+			using difference_type = utf_iterator::difference_type;
 
 		private:
 			iterator m_begin{};
@@ -57,9 +57,9 @@ namespace daw {
 			size_t m_size = 0;
 
 		public:
-			constexpr CharRange( ) noexcept = default;
+			constexpr utf_range( ) noexcept = default;
 
-			constexpr CharRange( iterator Begin, iterator End ) noexcept(
+			constexpr utf_range( iterator Begin, iterator End ) noexcept(
 			  daw::is_nothrow_copy_constructible_v<iterator> )
 			  : m_begin( Begin )
 			  , m_end( End )
@@ -94,14 +94,14 @@ namespace daw {
 				return m_size == 0;
 			}
 
-			constexpr CharRange &operator++( ) noexcept {
+			constexpr utf_range &operator++( ) noexcept {
 				++m_begin;
 				--m_size;
 				return *this;
 			}
 
-			constexpr CharRange operator++( int ) noexcept {
-				CharRange result( *this );
+			constexpr utf_range operator++( int ) noexcept {
+				utf_range result( *this );
 				++( *this );
 				return result;
 			}
@@ -120,7 +120,7 @@ namespace daw {
 				}
 			}
 
-			constexpr CharRange &set( iterator Begin, iterator End,
+			constexpr utf_range &set( iterator Begin, iterator End,
 			                          difference_type Size = -1 ) noexcept {
 				m_begin = Begin;
 				m_end = End;
@@ -132,26 +132,26 @@ namespace daw {
 				return *this;
 			}
 
-			constexpr CharRange &set_begin( iterator Begin,
+			constexpr utf_range &set_begin( iterator Begin,
 			                                difference_type Size = -1 ) noexcept {
 				return set( Begin, this->m_end, Size );
 			}
 
-			constexpr CharRange &set_end( iterator End,
+			constexpr utf_range &set_end( iterator End,
 			                              difference_type Size = -1 ) noexcept {
 				return set( this->m_begin, End, Size );
 			}
 
-			constexpr CharRange &operator+=( size_t const n ) noexcept {
+			constexpr utf_range &operator+=( size_t const n ) noexcept {
 				advance( n );
 				return *this;
 			}
 
-			constexpr CharIterator raw_begin( ) const noexcept {
+			constexpr char_iterator raw_begin( ) const noexcept {
 				return m_begin.base( );
 			}
 
-			constexpr CharIterator raw_end( ) const noexcept {
+			constexpr char_iterator raw_end( ) const noexcept {
 				return m_end.base( );
 			}
 
@@ -160,11 +160,11 @@ namespace daw {
 				  daw::distance( m_begin.base( ), m_end.base( ) ) );
 			}
 
-			constexpr CharRange copy( ) const noexcept {
+			constexpr utf_range copy( ) const noexcept {
 				return *this;
 			}
 
-			constexpr CharRange substr( size_t pos, size_t length ) const noexcept {
+			constexpr utf_range substr( size_t pos, size_t length ) const noexcept {
 				assert( pos + length <= size( ) );
 				auto result = copy( );
 				auto f = result.begin( ) + pos;
@@ -176,7 +176,7 @@ namespace daw {
 			std::u32string to_u32string( ) const noexcept;
 			std::string to_raw_u8string( ) const noexcept;
 
-			constexpr int compare( CharRange const &rhs ) const noexcept {
+			constexpr int compare( utf_range const &rhs ) const noexcept {
 				auto it_lhs = begin( );
 				auto it_rhs = rhs.begin( );
 				enum compare_results_t {
@@ -209,86 +209,86 @@ namespace daw {
 			constexpr daw::string_view to_string_view( ) const noexcept {
 				return daw::make_string_view_it( raw_begin( ), raw_end( ) );
 			}
-		}; // struct CharRange
+		}; // struct utf_range
 
-		constexpr CharRange operator+( CharRange range, size_t const n ) noexcept {
+		constexpr utf_range operator+( utf_range range, size_t const n ) noexcept {
 			range.advance( n );
 			return range;
 		}
 
-		constexpr CharRange create_char_range( UTFIterator first,
-		                                       UTFIterator last ) noexcept {
+		constexpr utf_range create_char_range( utf_iterator first,
+		                                       utf_iterator last ) noexcept {
 			return {first, last};
 		}
 
-		constexpr CharRange create_char_range( daw::string_view str ) noexcept {
-			auto it_begin = UTFIterator( str.begin( ) );
-			auto it_end = UTFIterator( str.end( ) );
+		constexpr utf_range create_char_range( daw::string_view str ) noexcept {
+			auto it_begin = utf_iterator( str.begin( ) );
+			auto it_end = utf_iterator( str.end( ) );
 			return {it_begin, it_end};
 		}
 
 		template<size_t N>
-		constexpr CharRange create_char_range( char const( &str )[N] ) noexcept {
+		constexpr utf_range create_char_range( char const( &str )[N] ) noexcept {
 			return { str, N-1 };
 		}
 
-		constexpr CharRange create_char_range( CharIterator first,
-		                                       CharIterator last ) noexcept {
-			auto it_begin = UTFIterator( first );
-			auto it_end = UTFIterator( last );
+		constexpr utf_range create_char_range( char_iterator first,
+		                                       char_iterator last ) noexcept {
+			auto it_begin = utf_iterator( first );
+			auto it_end = utf_iterator( last );
 			return {it_begin, it_end};
 		}
 
-		constexpr CharRange create_char_range( CharIterator first ) noexcept {
+		constexpr utf_range create_char_range( char_iterator first ) noexcept {
 			auto sv = daw::string_view( first );
 			return create_char_range( sv );
 		}
 
-		constexpr bool operator==( CharRange const &lhs,
-		                           CharRange const &rhs ) noexcept {
+		constexpr bool operator==( utf_range const &lhs,
+		                           utf_range const &rhs ) noexcept {
 			return lhs.compare( rhs ) == 0;
 		}
 
-		constexpr bool operator==( CharRange const &lhs,
+		constexpr bool operator==( utf_range const &lhs,
 		                           daw::string_view const &rhs ) noexcept {
 			return lhs == create_char_range( rhs );
 		}
 
-		constexpr bool operator!=( CharRange const &lhs,
-		                           CharRange const &rhs ) noexcept {
+		constexpr bool operator!=( utf_range const &lhs,
+		                           utf_range const &rhs ) noexcept {
 			return lhs.compare( rhs ) != 0;
 		}
 
-		constexpr bool operator<( CharRange const &lhs,
-		                          CharRange const &rhs ) noexcept {
+		constexpr bool operator<( utf_range const &lhs,
+		                          utf_range const &rhs ) noexcept {
 			return lhs.compare( rhs ) < 0;
 		}
 
-		constexpr bool operator>( CharRange const &lhs,
-		                          CharRange const &rhs ) noexcept {
+		constexpr bool operator>( utf_range const &lhs,
+		                          utf_range const &rhs ) noexcept {
 			return lhs.compare( rhs ) > 0;
 		}
 
-		constexpr bool operator<=( CharRange const &lhs,
-		                           CharRange const &rhs ) noexcept {
+		constexpr bool operator<=( utf_range const &lhs,
+		                           utf_range const &rhs ) noexcept {
 			return lhs.compare( rhs ) <= 0;
 		}
 
-		constexpr bool operator>=( CharRange const &lhs,
-		                           CharRange const &rhs ) noexcept {
+		constexpr bool operator>=( utf_range const &lhs,
+		                           utf_range const &rhs ) noexcept {
 			return lhs.compare( rhs ) >= 0;
 		}
 
-		constexpr void clear( CharRange &str ) noexcept {
+		constexpr void clear( utf_range &str ) noexcept {
 			str.advance( str.size( ) );
 		}
 
-		std::string to_string( CharRange const &str );
+		std::string to_string( utf_range const &str );
 
 		template<typename OStream,
 		         std::enable_if_t<daw::traits::is_ostream_like_v<OStream, char>,
 		                          std::nullptr_t> = nullptr>
-		OStream &operator<<( OStream &os, CharRange const &value ) {
+		OStream &operator<<( OStream &os, utf_range const &value ) {
 			for( auto it = value.begin( ).base( ); it != value.end( ).base( );
 			     ++it ) {
 				os << *it;
@@ -296,15 +296,15 @@ namespace daw {
 			return os;
 		}
 
-		constexpr daw::string_view to_string_view( CharRange const &str ) noexcept {
+		constexpr daw::string_view to_string_view( utf_range const &str ) noexcept {
 			return str.to_string_view( );
 		}
 
-		constexpr bool at_end( CharRange const &range ) noexcept {
+		constexpr bool at_end( utf_range const &range ) noexcept {
 			return range.size( ) == 0;
 		}
 
-		std::u32string to_u32string( UTFIterator first, UTFIterator last );
+		std::u32string to_u32string( utf_iterator first, utf_iterator last );
 
 	} // namespace range
 
@@ -313,8 +313,8 @@ namespace daw {
 
 namespace std {
 	template<>
-	struct hash<daw::range::CharRange> {
-		constexpr size_t operator( )( daw::range::CharRange const &value ) const noexcept {
+	struct hash<daw::range::utf_range> {
+		constexpr size_t operator( )( daw::range::utf_range const &value ) const noexcept {
 			return daw::range::hash_sequence( value.begin( ).base( ),
 			                                  value.end( ).base( ) );
 		}

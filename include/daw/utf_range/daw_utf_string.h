@@ -32,26 +32,26 @@
 #include <daw/daw_string_view.h>
 #include <daw/daw_traits.h>
 
-#include "daw_char_range.h"
+#include "daw_utf_range.h"
 
 namespace daw {
 	struct utf_string {
-		using iterator = range::UTFIterator;
-		using const_iterator = range::UTFIterator const;
-		using reference = range::UTFIterator::reference;
-		using value_type = range::UTFIterator::value_type;
+		using iterator = range::utf_iterator;
+		using const_iterator = range::utf_iterator const;
+		using reference = range::utf_iterator::reference;
+		using value_type = range::utf_iterator::value_type;
 		using const_reference = value_type const &;
-		using difference_type = range::UTFIterator::difference_type;
+		using difference_type = range::utf_iterator::difference_type;
 
 	private:
 		std::string m_values;
-		daw::range::CharRange m_range;
+		daw::range::utf_range m_range;
 
 	public:
 		utf_string( );
 		utf_string( utf_string const &other );
 		explicit utf_string( daw::string_view other );
-		explicit utf_string( daw::range::CharRange other );
+		explicit utf_string( daw::range::utf_range other );
 		explicit utf_string( char const *other );
 
 		template<size_t N>
@@ -80,14 +80,14 @@ namespace daw {
 		const_iterator end( ) const;
 		size_t size( ) const;
 		bool empty( ) const;
-		range::CharIterator raw_begin( ) const;
-		range::CharIterator raw_end( ) const;
+		range::char_iterator raw_begin( ) const;
+		range::char_iterator raw_end( ) const;
 		size_t raw_size( ) const;
 		utf_string substr( size_t pos, size_t length ) const;
 
 		std::string const &to_string( ) const;
 		std::u32string to_u32string( ) const;
-		range::CharRange const &char_range( ) const;
+		range::utf_range const &char_range( ) const;
 		int compare( utf_string const &rhs ) const;
 	}; // utf_string
 

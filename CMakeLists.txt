@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 2.8.12 )
 
-project( char_range_prj )
+project( utf_range_prj )
 
 include( ExternalProject )
 
@@ -41,8 +41,8 @@ set( SOURCE_FOLDER "src" )
 set( TEST_FOLDER "tests" )
 
 set( HEADER_FILES
-	${HEADER_FOLDER}/daw/char_range/daw_char_range.h
-	${HEADER_FOLDER}/daw/char_range/daw_utf_string.h
+	${HEADER_FOLDER}/daw/utf_range/daw_utf_range.h
+	${HEADER_FOLDER}/daw/utf_range/daw_utf_string.h
 )
 
 include_directories( ${HEADER_FOLDER} )
@@ -50,28 +50,28 @@ include_directories( SYSTEM ${Boost_INCLUDE_DIRS} )
 include_directories( "third_party/include" )
 link_directories( ${Boost_LIBRARY_DIRS} )
 
-add_library( char_range STATIC ${HEADER_FOLDER}/daw/char_range/daw_char_range.h ${SOURCE_FOLDER}/daw_char_range.cpp )
-add_dependencies( char_range header_libraries_prj )
+add_library( utf_range STATIC ${HEADER_FOLDER}/daw/utf_range/daw_utf_range.h ${SOURCE_FOLDER}/daw_utf_range.cpp )
+add_dependencies( utf_range header_libraries_prj )
 
-add_library( utf_string STATIC ${HEADER_FOLDER}/daw/char_range/daw_utf_string.h ${SOURCE_FOLDER}/daw_utf_string.cpp )
+add_library( utf_string STATIC ${HEADER_FOLDER}/daw/utf_range/daw_utf_string.h ${SOURCE_FOLDER}/daw_utf_string.cpp )
 add_dependencies( utf_string header_libraries_prj )
 
 enable_testing( )
 add_custom_target( check COMMAND ${CMAKE_CTEST_COMMAND} )
 
-install( TARGETS char_range DESTINATION lib )
+install( TARGETS utf_range DESTINATION lib )
 install( TARGETS utf_string DESTINATION lib )
 
 install( DIRECTORY ${HEADER_FOLDER}/ DESTINATION include/ )
 install( DIRECTORY third_party/include/ DESTINATION include )
 
-add_executable( char_range_test_bin EXCLUDE_FROM_ALL ${TEST_FOLDER}/daw_char_range_test.cpp ${HEADER_FOLDER}/daw/char_range/daw_char_range.h )
-target_link_libraries( char_range_test_bin char_range ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} )
-add_test( char_range_test, char_range_test_bin )
-add_dependencies( check char_range_test_bin )
+add_executable( utf_range_test_bin EXCLUDE_FROM_ALL ${TEST_FOLDER}/daw_utf_range_test.cpp ${HEADER_FOLDER}/daw/utf_range/daw_utf_range.h )
+target_link_libraries( utf_range_test_bin utf_range ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} )
+add_test( utf_range_test, utf_range_test_bin )
+add_dependencies( check utf_range_test_bin )
 
 add_executable( utf_string_test_bin EXCLUDE_FROM_ALL ${TEST_FOLDER}/daw_utf_string_test.cpp ${HEADER_FILES} )
-target_link_libraries( utf_string_test_bin char_range utf_string ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} )
+target_link_libraries( utf_string_test_bin utf_range utf_string ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} )
 add_test( utf_string_test, utf_string_test_bin )
 add_dependencies( check utf_string_test_bin )
 

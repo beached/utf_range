@@ -22,28 +22,28 @@
 
 #include <string>
 
-#include "daw/char_range/daw_char_range.h"
+#include "daw/utf_range/daw_utf_range.h"
 
 namespace daw {
 	namespace range {
-		std::string to_string( CharRange const &str ) {
+		std::string to_string( utf_range const &str ) {
 			return std::string{str.begin( ).base( ),
 			                   static_cast<size_t>( std::distance(
 			                     str.begin( ).base( ), str.end( ).base( ) ) )};
 		}
 
-		std::u32string to_u32string( UTFIterator first, UTFIterator last ) {
+		std::u32string to_u32string( utf_iterator first, utf_iterator last ) {
 			std::u32string result;
 			std::transform( first, last, std::back_inserter( result ),
 			                []( auto c ) { return static_cast<char32_t>( c ); } );
 			return result;
 		}
 
-		std::string CharRange::to_raw_u8string( ) const noexcept {
+		std::string utf_range::to_raw_u8string( ) const noexcept {
 			return std::string( m_begin.base( ), m_end.base( ) );
 		}
 
-		std::u32string CharRange::to_u32string( ) const noexcept {
+		std::u32string utf_range::to_u32string( ) const noexcept {
 			auto result = std::u32string( );
 			daw::algorithm::transform(
 			  begin( ), end( ), std::back_inserter( result ),
