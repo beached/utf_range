@@ -43,7 +43,7 @@ namespace daw {
 			return daw::fnv1a_hash( first, static_cast<size_t>(daw::distance( first, last )) );
 		}
 
-		struct CharRange {
+		struct 	CharRange {
 			using iterator = UTFIterator;
 			using const_iterator = UTFIterator const;
 			using reference = UTFIterator::reference;
@@ -61,8 +61,8 @@ namespace daw {
 
 			constexpr CharRange( iterator Begin, iterator End ) noexcept(
 			  daw::is_nothrow_copy_constructible_v<iterator> )
-			  : m_begin( std::move( Begin ) )
-			  , m_end( std::move( End ) )
+			  : m_begin( Begin )
+			  , m_end( End )
 			  , m_size( static_cast<size_t>( daw::distance( Begin, End ) ) ) {}
 
 			constexpr iterator
@@ -169,7 +169,7 @@ namespace daw {
 				auto result = copy( );
 				auto f = result.begin( ) + pos;
 				auto l = f + length;
-				result.set( std::move( f ), std::move( l ) );
+				result.set( f, l );
 				return result;
 			}
 
@@ -224,7 +224,7 @@ namespace daw {
 		constexpr CharRange create_char_range( daw::string_view str ) noexcept {
 			auto it_begin = UTFIterator( str.begin( ) );
 			auto it_end = UTFIterator( str.end( ) );
-			return {std::move( it_begin ), std::move( it_end )};
+			return {it_begin, it_end};
 		}
 
 		template<size_t N>
@@ -236,7 +236,7 @@ namespace daw {
 		                                       CharIterator last ) noexcept {
 			auto it_begin = UTFIterator( first );
 			auto it_end = UTFIterator( last );
-			return {std::move( it_begin ), std::move( it_end )};
+			return {it_begin, it_end};
 		}
 
 		constexpr CharRange create_char_range( CharIterator first ) noexcept {
@@ -309,74 +309,7 @@ namespace daw {
 	} // namespace range
 
 	std::string from_u32string( std::u32string const &other );
-
-	struct utf_string {
-		using iterator = range::UTFIterator;
-		using const_iterator = range::UTFIterator const;
-		using reference = range::UTFIterator::reference;
-		using value_type = range::UTFIterator::value_type;
-		using const_reference = value_type const &;
-		using difference_type = range::UTFIterator::difference_type;
-
-	private:
-		std::string m_values;
-		daw::range::CharRange m_range;
-
-	public:
-		utf_string( );
-		utf_string( daw::string_view other );
-		utf_string( daw::range::CharRange other );
-		utf_string( utf_string const &other );
-		utf_string( char const *other );
-		utf_string &operator=( utf_string const &rhs );
-		utf_string &operator=( daw::string_view rhs );
-		utf_string &operator=( char const *rhs );
-		utf_string &operator=( std::string const &rhs );
-
-		~utf_string( ) = default;
-
-		utf_string( utf_string && ) = default;
-		utf_string &operator=( utf_string && ) = default;
-
-		void swap( utf_string &rhs ) noexcept;
-
-		const_iterator begin( ) const;
-		const_iterator end( ) const;
-		size_t size( ) const;
-		bool empty( ) const;
-		range::CharIterator raw_begin( ) const;
-		range::CharIterator raw_end( ) const;
-		size_t raw_size( ) const;
-		utf_string substr( size_t pos, size_t length ) const;
-
-		std::string const &to_string( ) const;
-		std::u32string to_u32string( ) const;
-		range::CharRange const &char_range( ) const;
-		int compare( utf_string const &rhs ) const;
-	}; // utf_string
-
-	void swap( utf_string &lhs, utf_string &rhs ) noexcept;
-
-	bool operator==( utf_string const &lhs, utf_string const &rhs );
-	bool operator!=( utf_string const &lhs, utf_string const &rhs );
-	bool operator<( utf_string const &lhs, utf_string const &rhs );
-	bool operator>( utf_string const &lhs, utf_string const &rhs );
-	bool operator<=( utf_string const &lhs, utf_string const &rhs );
-	bool operator>=( utf_string const &lhs, utf_string const &rhs );
-	std::string to_string( utf_string const &str );
-	daw::string_view to_string_view( utf_string const &str );
-
-	template<typename OStream,
-	         std::enable_if_t<daw::traits::is_ostream_like_v<OStream, char>,
-	                          std::nullptr_t> = nullptr>
-	OStream &operator<<( OStream &os, utf_string const &value ) {
-		os << value.char_range( );
-		return os;
-	}
-
 } // namespace daw
-
-std::string to_string( daw::utf_string const &str );
 
 namespace std {
 	template<>
@@ -384,14 +317,6 @@ namespace std {
 		constexpr size_t operator( )( daw::range::CharRange const &value ) const noexcept {
 			return daw::range::hash_sequence( value.begin( ).base( ),
 			                                  value.end( ).base( ) );
-		}
-	};
-
-	template<>
-	struct hash<daw::utf_string> {
-		std::hash<std::string> m_hash;
-		size_t operator( )( daw::utf_string const &value ) const noexcept {
-			return m_hash( value.to_string( ) );
 		}
 	};
 } // namespace std
