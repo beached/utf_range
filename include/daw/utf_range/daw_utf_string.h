@@ -55,7 +55,7 @@ namespace daw {
 		explicit utf_string( char const *other );
 
 		template<size_t N>
-		utf_string( char const ( &str )[N] )
+		explicit utf_string( char const ( &str )[N] )
 		  : m_values( str, N - 1 )
 		  , m_range( daw::range::create_char_range( m_values ) ) {}
 
