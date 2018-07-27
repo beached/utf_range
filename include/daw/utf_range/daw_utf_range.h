@@ -168,8 +168,8 @@ namespace daw {
 			constexpr utf_range substr( size_t pos, size_t length ) const noexcept {
 				assert( pos + length <= size( ) );
 				auto result = copy( );
-				auto f = result.begin( ) + pos;
-				auto l = f + length;
+				auto f = result.begin( ) + static_cast<difference_type>( pos );
+				auto l = f + static_cast<difference_type>( length );
 				result.set( f, l );
 				return result;
 			}

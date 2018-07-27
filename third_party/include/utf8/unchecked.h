@@ -1,5 +1,5 @@
 // Copyright 2006 Nemanja Trifunovic
-
+// Modified by Darrell Wright 2018
 /*
 Permission is hereby granted, free of charge, to any person or organization
 obtaining a copy of the software and accompanying documentation covered by
@@ -242,32 +242,34 @@ namespace utf8 {
 				return temp;
 			}
 
-			template<typename Distance>
-			constexpr iterator &operator+=( Distance const n ) noexcept {
-				daw::advance( *this, static_cast<difference_type>( n ) );
+			constexpr iterator &operator+=( difference_type n ) noexcept {
+				while( n-- > 0 ) {
+					++( *this );
+				}
 				return *this;
 			}
 
-			template<typename Distance>
-			constexpr iterator &operator-=( Distance const n ) noexcept {
-				daw::advance( *this, -n );
+			constexpr iterator &operator-=( difference_type n ) noexcept {
+				while( n-- > 0 ) {
+					--( *this );
+				}
 				return *this;
 			}
 
 		}; // class iterator
 
-		template<typename octet_iterator, typename Distance>
-		constexpr iterator<octet_iterator> operator+( iterator<octet_iterator> it,
-		                                              Distance const n ) noexcept {
+		template<typename octet_iterator>
+		constexpr iterator<octet_iterator>
+		operator+( iterator<octet_iterator> it,
+		           typename iterator<octet_iterator>::difference_type n ) noexcept {
 			return it += n;
 		}
 
-		template<typename octet_iterator, typename Distance>
-		constexpr iterator<octet_iterator> operator-( iterator<octet_iterator> it,
-		                                              Distance const n ) noexcept {
+		template<typename octet_iterator>
+		constexpr iterator<octet_iterator>
+		operator-( iterator<octet_iterator> it,
+		           typename iterator<octet_iterator>::difference_type n ) noexcept {
 			return it -= n;
 		}
-
 	} // namespace unchecked
 } // namespace utf8
-

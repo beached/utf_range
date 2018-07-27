@@ -52,10 +52,10 @@ namespace daw {
 		utf_string( utf_string const &other );
 		explicit utf_string( daw::string_view other );
 		explicit utf_string( daw::range::utf_range other );
-		explicit utf_string( char const *other );
+		utf_string( char const *other );
 
 		template<size_t N>
-		explicit utf_string( char const ( &str )[N] )
+		utf_string( char const ( &str )[N] )
 		  : m_values( str, N - 1 )
 		  , m_range( daw::range::create_char_range( m_values ) ) {}
 
@@ -77,7 +77,9 @@ namespace daw {
 		utf_string &operator=( utf_string && ) noexcept = default;
 
 		const_iterator begin( ) const noexcept;
+		const_iterator cbegin( ) const noexcept;
 		const_iterator end( ) const noexcept;
+		const_iterator cend( ) const noexcept;
 		size_t size( ) const noexcept;
 		bool empty( ) const noexcept;
 		range::char_iterator raw_begin( ) const noexcept;
@@ -89,6 +91,8 @@ namespace daw {
 		std::u32string to_u32string( ) const;
 		range::utf_range const &utf_range( ) const noexcept;
 		int compare( utf_string const &rhs ) const noexcept;
+
+		void sort( );
 	}; // utf_string
 
 	bool operator==( utf_string const &lhs, utf_string const &rhs ) noexcept;

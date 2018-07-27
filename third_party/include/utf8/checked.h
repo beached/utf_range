@@ -1,5 +1,5 @@
 // Copyright 2006 Nemanja Trifunovic
-
+// Modified by Darrell Wright 2018
 /*
 Permission is hereby granted, free of charge, to any person or organization
 obtaining a copy of the software and accompanying documentation covered by

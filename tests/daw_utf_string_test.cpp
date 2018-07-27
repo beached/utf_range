@@ -46,3 +46,23 @@ BOOST_AUTO_TEST_CASE( utf_comparison_test_001 ) {
 	BOOST_REQUIRE( aa < bb );
 	BOOST_REQUIRE( bb > aa );
 }
+
+BOOST_AUTO_TEST_CASE( utf_string_sort_001 ) {
+	daw::utf_string tst_01 = u8"Приве́т नमस्ते שָׁלוֹם";
+	auto const tst_02 = tst_01;
+	tst_01.sort( );
+	BOOST_REQUIRE( !tst_01.empty( ) );
+	BOOST_REQUIRE( tst_01.size( ) == tst_02.size( ) );
+	BOOST_REQUIRE( tst_01 != tst_02 );
+	std::cout << "orig:   " << tst_02 << "\nlexigraphically\nsorted: " << tst_01 << '\n';
+}
+
+BOOST_AUTO_TEST_CASE( utf_string_sort_002 ) {
+	daw::utf_string tst_01 = u8"zyxwvutsrqponmlkjihgfedcba";
+	auto const tst_02 = tst_01;
+	tst_01.sort( );
+	BOOST_REQUIRE( !tst_01.empty( ) );
+	BOOST_REQUIRE( tst_01.size( ) == tst_02.size( ) );
+	BOOST_REQUIRE( tst_01 != tst_02 );
+	std::cout << "orig:   " << tst_02 << "\nlexigraphically\nsorted: " << tst_01 << '\n';
+}
