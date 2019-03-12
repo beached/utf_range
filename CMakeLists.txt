@@ -52,10 +52,10 @@ include_directories( SYSTEM ${Boost_INCLUDE_DIRS} )
 include_directories( "third_party/include" )
 link_directories( ${Boost_LIBRARY_DIRS} )
 
-add_library( utf_range STATIC ${HEADER_FOLDER}/daw/utf_range/daw_utf_range.h ${SOURCE_FOLDER}/daw_utf_range.cpp )
+add_library( utf_range ${HEADER_FOLDER}/daw/utf_range/daw_utf_range.h ${SOURCE_FOLDER}/daw_utf_range.cpp )
 add_dependencies( utf_range dependency_stub )
 
-add_library( utf_string STATIC ${HEADER_FOLDER}/daw/utf_range/daw_utf_string.h ${SOURCE_FOLDER}/daw_utf_string.cpp )
+add_library( utf_string ${HEADER_FOLDER}/daw/utf_range/daw_utf_string.h ${SOURCE_FOLDER}/daw_utf_string.cpp )
 add_dependencies( utf_string dependency_stub )
 
 enable_testing( )
