@@ -57,6 +57,7 @@ add_dependencies( utf_range dependency_stub )
 
 add_library( utf_string ${HEADER_FOLDER}/daw/utf_range/daw_utf_string.h ${SOURCE_FOLDER}/daw_utf_string.cpp )
 add_dependencies( utf_string dependency_stub )
+target_link_libraries( utf_string utf_range )
 
 enable_testing( )
 add_custom_target( check COMMAND ${CMAKE_CTEST_COMMAND} )
