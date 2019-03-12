@@ -27,7 +27,6 @@
 #include <daw/daw_string_view.h>
 #include <daw/utf_range/daw_utf_string.h>
 
-
 #include "daw/utf_range/daw_utf_string.h"
 
 namespace daw {
@@ -71,8 +70,8 @@ namespace daw {
 	}
 
 	utf_string::utf_string( char const *other )
-	  : m_values(copy_to_string( other ))
-	  , m_range(daw::range::create_char_range( m_values )) {}
+	  : m_values( copy_to_string( other ) )
+	  , m_range( daw::range::create_char_range( m_values ) ) {}
 
 	utf_string::const_iterator utf_string::begin( ) const noexcept {
 		return m_range.begin( );
@@ -132,7 +131,7 @@ namespace daw {
 	}
 
 	utf_string utf_string::substr( size_t pos, size_t length ) const {
-		return utf_string(m_range.substr( pos, length ));
+		return utf_string( m_range.substr( pos, length ) );
 	}
 
 	std::string const &utf_string::to_string( ) const noexcept {
@@ -156,7 +155,8 @@ namespace daw {
 		std::copy( cbegin( ), cend( ), std::back_inserter( result ) );
 		std::sort( result.begin( ), result.end( ) );
 		m_values.clear( );
-		utf8::unchecked::utf32to8( result.cbegin( ), result.cend( ), std::back_inserter( m_values ) );
+		utf8::unchecked::utf32to8( result.cbegin( ), result.cend( ),
+		                           std::back_inserter( m_values ) );
 		m_range = daw::range::create_char_range( m_values );
 	}
 
