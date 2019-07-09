@@ -1,0 +1,13 @@
+{
+	"provides": "utf_range",
+	"build_type": "cmake",
+	"dependencies": [ 
+		{
+			"name": "header_libraries",
+			"download_type": "git",
+			"build_type": "cmake",
+			"uri": "https://github.com/beached/header_libraries"
+		}
+	]
+}
+
