@@ -61,23 +61,23 @@ namespace daw {
 			constexpr utf_range( ) noexcept = default;
 
 			constexpr utf_range( iterator Begin, iterator End ) noexcept(
-			  daw::is_nothrow_copy_constructible_v<iterator> )
+			  std::is_nothrow_copy_constructible_v<iterator> )
 			  : m_begin( Begin )
 			  , m_end( End )
 			  , m_size( static_cast<size_t>( daw::distance( Begin, End ) ) ) {}
 
 			constexpr iterator
-			begin( ) noexcept( daw::is_nothrow_copy_constructible_v<iterator> ) {
+			begin( ) noexcept( std::is_nothrow_copy_constructible_v<iterator> ) {
 				return m_begin;
 			}
 
 			constexpr const_iterator begin( ) const
-			  noexcept( daw::is_nothrow_copy_constructible_v<iterator> ) {
+			  noexcept( std::is_nothrow_copy_constructible_v<iterator> ) {
 				return m_begin;
 			}
 
 			constexpr iterator
-			end( ) noexcept( daw::is_nothrow_copy_constructible_v<iterator> ) {
+			end( ) noexcept( std::is_nothrow_copy_constructible_v<iterator> ) {
 				return m_end;
 			}
 
@@ -86,12 +86,12 @@ namespace daw {
 			}
 
 			constexpr size_t size( ) const
-			  noexcept( daw::is_nothrow_copy_constructible_v<iterator> ) {
+			  noexcept( std::is_nothrow_copy_constructible_v<iterator> ) {
 				return m_size;
 			}
 
 			constexpr bool empty( ) const
-			  noexcept( daw::is_nothrow_copy_constructible_v<iterator> ) {
+			  noexcept( std::is_nothrow_copy_constructible_v<iterator> ) {
 				return m_size == 0;
 			}
 
