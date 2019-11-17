@@ -4,12 +4,7 @@ project( utf_range_prj )
 
 include( ExternalProject )
 
-find_package( Boost 1.58.0 COMPONENTS system filesystem regex unit_test_framework iostreams REQUIRED )
-
-add_definitions( -DBOOST_ALL_NO_LIB )
-
 set( CMAKE_CXX_STANDARD 17 CACHE STRING "The C++ standard whose features are requested.")
-add_definitions( -DBOOST_TEST_DYN_LINK -DBOOST_ALL_NO_LIB -DBOOST_ALL_DYN_LINK )
 
 include( "${CMAKE_SOURCE_DIR}/dependent_projects/CMakeListsCompiler.txt" )
 
@@ -44,8 +39,6 @@ endif( )
 include_directories( SYSTEM "${CMAKE_BINARY_DIR}/install/include" )
 #link_directories( "${CMAKE_BINARY_DIR}/install/lib" )
 
-add_definitions( -DBOOST_TEST_DYN_LINK -DBOOST_ALL_NO_LIB -DBOOST_ALL_DYN_LINK )
-
 set( HEADER_FOLDER "include" )
 set( SOURCE_FOLDER "src" )
 set( TEST_FOLDER "tests" )
@@ -56,9 +49,7 @@ set( HEADER_FILES
 )
 
 include_directories( ${HEADER_FOLDER} )
-include_directories( SYSTEM ${Boost_INCLUDE_DIRS} )
 include_directories( "third_party/include" )
-link_directories( ${Boost_LIBRARY_DIRS} )
 
 add_library( utf_range ${HEADER_FOLDER}/daw/utf_range/daw_utf_range.h ${SOURCE_FOLDER}/daw_utf_range.cpp )
 add_dependencies( utf_range dependency_stub )
@@ -77,13 +68,13 @@ install( DIRECTORY ${HEADER_FOLDER}/ DESTINATION include/ )
 install( DIRECTORY third_party/include/ DESTINATION include )
 
 add_executable( utf_range_test_bin EXCLUDE_FROM_ALL ${TEST_FOLDER}/daw_utf_range_test.cpp ${HEADER_FOLDER}/daw/utf_range/daw_utf_range.h )
-target_link_libraries( utf_range_test_bin utf_range ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} )
+target_link_libraries( utf_range_test_bin utf_range ${CMAKE_THREAD_LIBS_INIT} )
 add_dependencies( utf_range_test_bin dependency_stub utf_range )
 add_test( utf_range_test, utf_range_test_bin )
 add_dependencies( check utf_range_test_bin )
 
 add_executable( utf_string_test_bin EXCLUDE_FROM_ALL ${TEST_FOLDER}/daw_utf_string_test.cpp ${HEADER_FILES} )
-target_link_libraries( utf_string_test_bin utf_range utf_string ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} )
+target_link_libraries( utf_string_test_bin utf_range utf_string ${CMAKE_THREAD_LIBS_INIT} )
 add_dependencies( utf_string_test_bin dependency_stub utf_string )
 add_test( utf_string_test, utf_string_test_bin )
 add_dependencies( check utf_string_test_bin )

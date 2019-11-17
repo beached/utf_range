@@ -20,17 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#define BOOST_TEST_MODULE char_range_test
-
-#include <daw/boost_test.h>
 #include <iostream>
 
 #include "daw/utf_range/daw_utf_range.h"
 
-BOOST_AUTO_TEST_CASE( char_range_test_001 ) {
+void char_range_test_001( ) {
 	constexpr auto const rng =
 	  daw::range::create_char_range( u8"Приве́т नमस्ते שָׁלוֹם" );
 	for( auto c : rng ) {
 		std::cout << c << '\n';
 	}
 }
+
+int main( ) {
+	char_range_test_001( );
+}
+

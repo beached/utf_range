@@ -20,49 +20,56 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#define BOOST_TEST_MODULE utf_string_test
-
-#include <daw/boost_test.h>
 #include <iostream>
+
+#include <daw/daw_benchmark.h>
 
 #include "daw/utf_range/daw_utf_string.h"
 
-BOOST_AUTO_TEST_CASE( utf_string_test_001 ) {
+void  utf_string_test_001 ( ) {
 	daw::utf_string b = u8"Приве́т नमस्ते שָׁלוֹם";
 	for( auto c : b ) {
 		std::cout << c << '\n';
 	}
 }
 
-BOOST_AUTO_TEST_CASE( utf_comparison_test_001 ) {
+void  utf_comparison_test_001 ( ) {
 	daw::utf_string const a = u8"a";
 	daw::utf_string const aa = u8"aa";
 	daw::utf_string const bb = u8"bb";
 
-	BOOST_REQUIRE( a == a );
-	BOOST_REQUIRE( a != bb );
-	BOOST_REQUIRE( a < aa );
-	BOOST_REQUIRE( a < bb );
-	BOOST_REQUIRE( aa < bb );
-	BOOST_REQUIRE( bb > aa );
+	daw::expecting( a == a );
+	daw::expecting( a != bb );
+	daw::expecting( a < aa );
+	daw::expecting( a < bb );
+	daw::expecting( aa < bb );
+	daw::expecting( bb > aa );
 }
 
-BOOST_AUTO_TEST_CASE( utf_string_sort_001 ) {
+void  utf_string_sort_001 ( ) {
 	daw::utf_string tst_01 = u8"Приве́т नमस्ते שָׁלוֹם";
 	auto const tst_02 = tst_01;
 	tst_01.sort( );
-	BOOST_REQUIRE( !tst_01.empty( ) );
-	BOOST_REQUIRE( tst_01.size( ) == tst_02.size( ) );
-	BOOST_REQUIRE( tst_01 != tst_02 );
+	daw::expecting( !tst_01.empty( ) );
+	daw::expecting( tst_01.size( ) == tst_02.size( ) );
+	daw::expecting( tst_01 != tst_02 );
 	std::cout << "orig:   " << tst_02 << "\nlexigraphically\nsorted: " << tst_01 << '\n';
 }
 
-BOOST_AUTO_TEST_CASE( utf_string_sort_002 ) {
+void  utf_string_sort_002 ( ) {
 	daw::utf_string tst_01 = u8"zyxwvutsrqponmlkjihgfedcba";
 	auto const tst_02 = tst_01;
 	tst_01.sort( );
-	BOOST_REQUIRE( !tst_01.empty( ) );
-	BOOST_REQUIRE( tst_01.size( ) == tst_02.size( ) );
-	BOOST_REQUIRE( tst_01 != tst_02 );
+	daw::expecting( !tst_01.empty( ) );
+	daw::expecting( tst_01.size( ) == tst_02.size( ) );
+	daw::expecting( tst_01 != tst_02 );
 	std::cout << "orig:   " << tst_02 << "\nlexigraphically\nsorted: " << tst_01 << '\n';
 }
+
+int main( ) {
+	utf_string_test_001( );
+	utf_comparison_test_001( );
+	utf_string_sort_001( );
+	utf_string_sort_002( );
+}
+
