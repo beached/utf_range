@@ -49,7 +49,6 @@ set( HEADER_FILES
 )
 
 include_directories( ${HEADER_FOLDER} )
-include_directories( "third_party/include" )
 
 add_library( utf_range ${HEADER_FOLDER}/daw/utf_range/daw_utf_range.h ${SOURCE_FOLDER}/daw_utf_range.cpp )
 add_dependencies( utf_range dependency_stub )
@@ -65,7 +64,6 @@ install( TARGETS utf_range DESTINATION lib )
 install( TARGETS utf_string DESTINATION lib )
 
 install( DIRECTORY ${HEADER_FOLDER}/ DESTINATION include/ )
-install( DIRECTORY third_party/include/ DESTINATION include )
 
 add_executable( utf_range_test_bin EXCLUDE_FROM_ALL ${TEST_FOLDER}/daw_utf_range_test.cpp ${HEADER_FOLDER}/daw/utf_range/daw_utf_range.h )
 target_link_libraries( utf_range_test_bin utf_range ${CMAKE_THREAD_LIBS_INIT} )

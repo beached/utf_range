@@ -27,6 +27,8 @@ DEALINGS IN THE SOFTWARE.
 #pragma once
 
 #include "core.h"
+
+#include <daw/daw_exception.h>
 #include <stdexcept>
 
 namespace utf8 {
@@ -97,9 +99,8 @@ namespace utf8 {
 
 	template<typename octet_iterator>
 	constexpr octet_iterator append( uint32_t cp, octet_iterator result ) {
-		if( !utf8::internal::is_code_point_valid( cp ) ) {
-			throw invalid_code_point( cp );
-		}
+		daw::exception::precondition_check<invalid_code_point>(
+		  utf8::internal::is_code_point_valid( cp ), cp );
 
 		if( cp < 0x80 ) // one octet
 			*( result++ ) = static_cast<uint8_t>( cp );
@@ -134,7 +135,7 @@ namespace utf8 {
 				}
 				break;
 			case internal::NOT_ENOUGH_ROOM:
-				throw not_enough_room( );
+				daw::exception::daw_throw<not_enough_room>( );
 			case internal::INVALID_LEAD:
 				out = utf8::append( replacement, out );
 				++start;
@@ -171,13 +172,13 @@ namespace utf8 {
 		case internal::utf_error::UTF8_OK:
 			break;
 		case internal::utf_error::NOT_ENOUGH_ROOM:
-			throw not_enough_room( );
+			daw::exception::daw_throw<not_enough_room>( );
 		case internal::utf_error::INVALID_LEAD:
 		case internal::utf_error::INCOMPLETE_SEQUENCE:
 		case internal::utf_error::OVERLONG_SEQUENCE:
-			throw invalid_utf8( *it );
+			daw::exception::daw_throw<invalid_utf8>( *it );
 		case internal::utf_error::INVALID_CODE_POINT:
-			throw invalid_code_point( cp );
+			daw::exception::daw_throw<invalid_code_point>( cp );
 		}
 		return cp;
 	}
@@ -190,16 +191,13 @@ namespace utf8 {
 	template<typename octet_iterator>
 	constexpr uint32_t prior( octet_iterator &it, octet_iterator start ) {
 		// can't do much if it == start
-		if( it == start ) {
-			throw not_enough_room( );
-		}
+		daw::exception::precondition_check<not_enough_room>( it != start );
 
 		auto end = it;
 		// Go back until we hit either a lead octet or start
 		while( utf8::internal::is_trail( *( --it ) ) ) {
-			if( it == start ) {
-				throw invalid_utf8( *it ); // error - no lead byte in the sequence
-			}
+			// error - no lead byte in the sequence
+			daw::exception::precondition_check<invalid_utf8>( it != start, *it );
 		}
 		return utf8::peek_next( it, end );
 	}
@@ -210,9 +208,8 @@ namespace utf8 {
 		auto end = it;
 
 		while( utf8::internal::is_trail( *( --it ) ) ) {
-			if( it == pass_start ) {
-				throw invalid_utf8( *it ); // error - no lead byte in the sequence
-			}
+			// error - no lead byte in the sequence
+			daw::exception::precondition_check<invalid_utf8>( it != pass_start, *it );
 		}
 		octet_iterator temp = it;
 		return utf8::next( temp, end );
@@ -247,19 +244,17 @@ namespace utf8 {
 			// Take care of surrogate pairs first
 
 			if( utf8::internal::is_lead_surrogate( cp ) ) {
-				if( start != end ) {
-					uint32_t trail_surrogate = utf8::internal::mask16( *start++ );
-					if( utf8::internal::is_trail_surrogate( trail_surrogate ) ) {
-						cp = ( cp << 10 ) + trail_surrogate + internal::SURROGATE_OFFSET;
-					} else {
-						throw invalid_utf16( static_cast<uint16_t>( trail_surrogate ) );
-					}
-				} else {
-					throw invalid_utf16( static_cast<uint16_t>( cp ) );
-				}
+				daw::exception::precondition_check<invalid_utf16>(
+				  start != end, static_cast<uint16_t>( cp ) );
+				uint32_t trail_surrogate = utf8::internal::mask16( *start++ );
+				daw::exception::precondition_check<invalid_utf16>(
+				  utf8::internal::is_trail_surrogate( trail_surrogate ),
+				  static_cast<uint16_t>( trail_surrogate ) );
+
+				cp = ( cp << 10 ) + trail_surrogate + internal::SURROGATE_OFFSET;
 			} else if( utf8::internal::is_trail_surrogate( cp ) ) {
 				// Lone trail surrogate
-				throw invalid_utf16( static_cast<uint16_t>( cp ) );
+				daw::exception::daw_throw<invalid_utf16>( static_cast<uint16_t>( cp ) );
 			}
 			result = utf8::append( cp, result );
 		}
@@ -327,9 +322,9 @@ namespace utf8 {
 		  , range_start( rangestart )
 		  , range_end( rangeend ) {
 
-			if( it < range_start || it > range_end ) {
-				throw std::out_of_range( "Invalid utf-8 iterator position" );
-			}
+			daw::exception::precondition_check<std::out_of_range>(
+			  range_start <= it and it <= range_end,
+			  "Invalid utf-8 iterator position" );
 		}
 		// the default "big three" are OK
 		constexpr octet_iterator base( ) const
@@ -343,15 +338,14 @@ namespace utf8 {
 		}
 
 		constexpr bool operator==( const iterator &rhs ) const {
-			if( range_start != rhs.range_start || range_end != rhs.range_end ) {
-				throw std::logic_error(
-				  "Comparing utf-8 iterators defined with different ranges" );
-			}
+			daw::exception::precondition_check<std::logic_error>(
+			  range_start == rhs.range_start and range_end == rhs.range_end,
+			  "Comparing utf-8 iterators defined with different ranges" );
 			return ( it == rhs.it );
 		}
 
 		constexpr bool operator!=( const iterator &rhs ) const {
-			return !( operator==( rhs ) );
+			return not( operator==( rhs ) );
 		}
 
 		constexpr iterator &operator++( ) {
