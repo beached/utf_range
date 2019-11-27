@@ -49,7 +49,7 @@ namespace utf8 {
 				*( result++ ) = static_cast<int8_t>( ( ( cp >> 6 ) & 0x3f ) | 0x80 );
 				*( result++ ) = static_cast<int8_t>( ( cp & 0x3f ) | 0x80 );
 			}
-			return std::move( result );
+			return result;
 		}
 
 		template<typename octet_iterator>
