@@ -40,7 +40,7 @@ namespace utf8 {
 		invalid_code_point( uint32_t Cp ) noexcept
 		  : cp( Cp ) {}
 
-		char const *what( ) const noexcept override {
+		char const *what( ) const noexcept {
 			return "Invalid code point";
 		}
 
@@ -56,7 +56,7 @@ namespace utf8 {
 		invalid_utf8( uint8_t u ) noexcept
 		  : u8( u ) {}
 
-		char const *what( ) const noexcept override {
+		char const *what( ) const noexcept {
 			return "Invalid UTF-8";
 		}
 
@@ -72,7 +72,7 @@ namespace utf8 {
 		invalid_utf16( uint16_t u ) noexcept
 		  : u16( u ) {}
 
-		char const *what( ) const noexcept override {
+		char const *what( ) const noexcept {
 			return "Invalid UTF-16";
 		}
 
@@ -84,7 +84,7 @@ namespace utf8 {
 	struct not_enough_room {
 		not_enough_room( ) noexcept = default;
 
-		char const *what( ) const noexcept override {
+		char const *what( ) const noexcept {
 			return "Not enough space";
 		}
 	};
