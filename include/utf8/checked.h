@@ -32,17 +32,13 @@ DEALINGS IN THE SOFTWARE.
 #include <stdexcept>
 
 namespace utf8 {
-	// Base for the exceptions that may be thrown from the library
-	struct exception : ::std::exception {};
-
 	// Exceptions that may be thrown from the library functions.
-	class invalid_code_point : public exception {
+	class invalid_code_point {
 		uint32_t cp;
 
 	public:
 		invalid_code_point( uint32_t Cp ) noexcept
-		  : exception( )
-		  , cp( Cp ) {}
+		  : cp( Cp ) {}
 
 		char const *what( ) const noexcept override {
 			return "Invalid code point";
@@ -53,13 +49,12 @@ namespace utf8 {
 		}
 	};
 
-	class invalid_utf8 : public exception {
+	class invalid_utf8 {
 		uint8_t u8;
 
 	public:
 		invalid_utf8( uint8_t u ) noexcept
-		  : exception( )
-		  , u8( u ) {}
+		  : u8( u ) {}
 
 		char const *what( ) const noexcept override {
 			return "Invalid UTF-8";
@@ -70,13 +65,12 @@ namespace utf8 {
 		}
 	};
 
-	class invalid_utf16 : public exception {
+	class invalid_utf16 {
 		uint16_t u16;
 
 	public:
 		invalid_utf16( uint16_t u ) noexcept
-		  : exception( )
-		  , u16( u ) {}
+		  : u16( u ) {}
 
 		char const *what( ) const noexcept override {
 			return "Invalid UTF-16";
@@ -87,7 +81,7 @@ namespace utf8 {
 		}
 	};
 
-	struct not_enough_room : exception {
+	struct not_enough_room {
 		not_enough_room( ) noexcept = default;
 
 		char const *what( ) const noexcept override {
@@ -251,7 +245,7 @@ namespace utf8 {
 				  utf8::internal::is_trail_surrogate( trail_surrogate ),
 				  static_cast<uint16_t>( trail_surrogate ) );
 
-				cp = ( cp << 10 ) + trail_surrogate + internal::SURROGATE_OFFSET;
+				cp = ( cp << 10 ) + static_cast<int32_t>(trail_surrogate + internal::SURROGATE_OFFSET);
 			} else if( utf8::internal::is_trail_surrogate( cp ) ) {
 				// Lone trail surrogate
 				daw::exception::daw_throw<invalid_utf16>( static_cast<uint16_t>( cp ) );
