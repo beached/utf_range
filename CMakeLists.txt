@@ -11,6 +11,7 @@ cmake_minimum_required( VERSION 3.10 )
 project( "utf_range"
 	VERSION "1.0.0" 
 	DESCRIPTION "UTF8 Iterator/Range for traversing utf8 text"
+	HOMEPAGE_URL "https://github.com/beached/utf_range"
 	LANGUAGES C CXX)
 
 set( CMAKE_CXX_STANDARD 17 CACHE STRING "The C++ standard whose features are requested.")
