@@ -1,95 +1,70 @@
-cmake_minimum_required(VERSION 3.10)
-project( utf_range_prj )
+# Copyright (c) Darrell Wright
+#
+# Distributed under the Boost Software License, Version 1.0. (See accompanying
+# file LICENSE or copy at http://www.boost.org/LICENSE_1_0.txt)
+#
+# Official repository: https://github.com/beached/utf_range
+#
+
+cmake_minimum_required( VERSION 3.10 ) 
+
+project( "utf_range"
+	VERSION "1.0.0" 
+	DESCRIPTION "UTF8 Iterator/Range for traversing utf8 text"
+	HOMEPAGE_URL "http://github.com/beached/utf_range"
+	LANGUAGES C CXX)
 
 set( CMAKE_CXX_STANDARD 17 CACHE STRING "The C++ standard whose features are requested.")
+set( CMAKE_CXX_STANDARD_REQUIRED ON)
+set( CMAKE_CXX_EXTENSIONS OFF)
 
-enable_testing()
+add_subdirectory(extern)
 
-include("${CMAKE_SOURCE_DIR}/dependent_projects/CMakeListsCompiler.txt")
+include( GNUInstallDirs)
+set( utf_range_INSTALL_CMAKEDIR
+	"${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake"
+	CACHE STRING
+	"The install directory to use for CMake package config files") 
 
-include_directories("./include")
-#set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+set( PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 
-if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-    set(GLEAN_CACHE "${CMAKE_SOURCE_DIR}/.glean/debug")
-    set(GLEAN_CACHE2 "${CMAKE_SOURCE_DIR}/.glean/release")
-elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
-    set(GLEAN_CACHE "${CMAKE_SOURCE_DIR}/.glean/release")
-    set(GLEAN_CACHE2 "${CMAKE_SOURCE_DIR}/.glean/debug")
-elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "")
-    set(GLEAN_CACHE "${CMAKE_SOURCE_DIR}/.glean/release")
-    set(GLEAN_CACHE2 "${CMAKE_SOURCE_DIR}/.glean/debug")
-endif ()
+add_library( ${PROJECT_NAME} INTERFACE ) 
+add_library( daw::${PROJECT_NAME} ALIAS ${PROJECT_NAME} )
 
-message("Building for: ${CMAKE_BUILD_TYPE}")
-message("Checking for glean cache: '${GLEAN_CACHE}'")
-
-option(GLEAN_INSTALL_ROOT "")
-if (EXISTS "${GLEAN_INSTALL_ROOT}")
-    message("using glean dependencies")
-    message("installing to ${GLEAN_INSTALL_ROOT}")
-
-    add_custom_target(dependency_stub)
-    include_directories(SYSTEM "${GLEAN_INSTALL_ROOT}/include")
-    link_directories("${GLEAN_INSTALL_ROOT}/lib")
-elseif (EXISTS "${GLEAN_CACHE}")
-    message("using glean dependencies")
-    add_custom_target(dependency_stub)
-    include_directories(SYSTEM "${GLEAN_CACHE}/include")
-    link_directories("${GLEAN_CACHE}/lib")
-elseif (EXISTS "${GLEAN_CACHE2}")
-    message("looks like glean is in use but missing ${GLEAN_CACHE}")
-elseif (EXISTS "${CMAKE_SOURCE_DIR}/glean.cmake")
-    message("glean.cmake detected")
-    include("${CMAKE_SOURCE_DIR}/glean.cmake")
-    add_library(dependency_stub STATIC "${CMAKE_SOURCE_DIR}/dependent_projects/stub.cpp")
-    add_dependencies(dependency_stub ${DEP_PROJECT_DEPS})
-    include_directories(SYSTEM "${CMAKE_BINARY_DIR}/install/include")
-    link_directories("${CMAKE_BINARY_DIR}/install/lib")
-endif ()
-
-set( HEADER_FOLDER "include" )
-set( SOURCE_FOLDER "src" )
-set( TEST_FOLDER "tests" )
-
-set( HEADER_FILES
-	${HEADER_FOLDER}/daw/utf_range/daw_utf_range.h
-	${HEADER_FOLDER}/daw/utf_range/daw_utf_string.h
+target_link_libraries( ${PROJECT_NAME} INTERFACE daw::header_libraries ${COMPILER_SPECIFIC_LIBS} )
+target_compile_features( ${PROJECT_NAME} INTERFACE cxx_std_17)
+target_include_directories( ${PROJECT_NAME}
+	INTERFACE
+	"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+	"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
 )
 
-include_directories( ${HEADER_FOLDER} )
+install( TARGETS ${PROJECT_NAME}
+	EXPORT ${PROJECT_NAME}_Targets
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-set(DAW_USE_FULL_LIBRARY OFF CACHE STRING "Build full library.  Default is headers only")
-if (DAW_USE_FULL_LIBRARY)
-	add_library( utf_range ${HEADER_FOLDER}/daw/utf_range/daw_utf_range.h ${SOURCE_FOLDER}/daw_utf_range.cpp )
-	add_dependencies( utf_range dependency_stub )
+include( CMakePackageConfigHelpers)
 
-	add_library( utf_string ${HEADER_FOLDER}/daw/utf_range/daw_utf_string.h ${SOURCE_FOLDER}/daw_utf_string.cpp )
-	add_dependencies( utf_string dependency_stub )
-	target_link_libraries( utf_string utf_range )
+configure_package_config_file( 
+	"${PROJECT_SOURCE_DIR}/cmake/daw_${PROJECT_NAME}Config.cmake.in"
+	"${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+	INSTALL_DESTINATION
+	${utf_range_INSTALL_CMAKEDIR} )
 
-	enable_testing( )
-	add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
-	add_custom_target(full)
+write_basic_package_version_file( "${PROJECT_NAME}ConfigVersion.cmake"
+	VERSION ${PROJECT_VERSION}
+	COMPATIBILITY SameMajorVersion)
 
-	install( TARGETS utf_range DESTINATION lib )
-	install( TARGETS utf_string DESTINATION lib )
-endif ()
-install( DIRECTORY ${HEADER_FOLDER}/ DESTINATION include/ )
+install( EXPORT ${PROJECT_NAME}_Targets
+	FILE ${PROJECT_NAME}Targets.cmake
+	NAMESPACE daw::
+	DESTINATION ${utf_range_INSTALL_CMAKEDIR})
 
-if (DAW_USE_FULL_LIBRARY)
-	add_executable( utf_range_test_bin EXCLUDE_FROM_ALL ${TEST_FOLDER}/daw_utf_range_test.cpp ${HEADER_FOLDER}/daw/utf_range/daw_utf_range.h )
-	target_link_libraries( utf_range_test_bin utf_range ${CMAKE_THREAD_LIBS_INIT} )
-	add_dependencies( utf_range_test_bin dependency_stub utf_range )
-	add_test( NAME utf_range_test COMMAND utf_range_test_bin )
-	add_dependencies( check utf_range_test_bin )
-	add_dependencies( full utf_range_test_bin )
+install( FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+	"${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+	DESTINATION ${utf_range_INSTALL_CMAKEDIR}$ )
 
-	add_executable( utf_string_test_bin EXCLUDE_FROM_ALL ${TEST_FOLDER}/daw_utf_string_test.cpp ${HEADER_FILES} )
-	target_link_libraries( utf_string_test_bin utf_range utf_string ${CMAKE_THREAD_LIBS_INIT} )
-	add_dependencies( utf_string_test_bin dependency_stub utf_string )
-	add_test( NAME utf_string_test COMMAND utf_string_test_bin )
-	add_dependencies( check utf_string_test_bin )
-	add_dependencies( full utf_string_test_bin )
-endif ()
-
+install( DIRECTORY ${PROJECT_SOURCE_DIR}/include DESTINATION include)
+			
