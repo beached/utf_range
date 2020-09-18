@@ -30,6 +30,7 @@ set( PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 
 add_library( ${PROJECT_NAME} INTERFACE ) 
 add_library( daw::${PROJECT_NAME} ALIAS ${PROJECT_NAME} )
+target_link_libraries( ${PROJECT_NAME} INTERFACE daw::header_libraries ) 
 
 target_link_libraries( ${PROJECT_NAME} INTERFACE daw::header_libraries ${COMPILER_SPECIFIC_LIBS} )
 target_compile_features( ${PROJECT_NAME} INTERFACE cxx_std_17)
