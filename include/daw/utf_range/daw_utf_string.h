@@ -69,11 +69,11 @@ namespace daw {
 		  , m_range( daw::range::create_char_range( m_values ) ) {}
 
 		inline utf_string( daw::string_view other )
-		  : m_values( copy_to_string( other ) )
+		  : m_values( details::copy_to_string( other ) )
 		  , m_range( daw::range::create_char_range( m_values ) ) {}
 
 		inline utf_string( daw::range::utf_range other )
-		  : m_values( copy_to_string( other ) )
+		  : m_values( details::copy_to_string( other ) )
 		  , m_range( daw::range::create_char_range( m_values ) ) {}
 
 		inline utf_string( utf_string const &other )
@@ -89,7 +89,7 @@ namespace daw {
 		}
 
 		inline utf_string( char const *other )
-		  : m_values( copy_to_string( other ) )
+		  : m_values( details::copy_to_string( other ) )
 		  , m_range( daw::range::create_char_range( m_values ) ) {}
 
 		inline const_iterator begin( ) const noexcept {
