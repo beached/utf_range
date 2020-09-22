@@ -1,10 +1,10 @@
 // Copyright (c) Darrell Wright
-// 
+//
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE or copy at http://www.boost.org/LICENSE_1_0.txt)
-// 
+//
 // Official repository: https://github.com/beached/header_libraries
-// 
+//
 
 #pragma once
 
@@ -21,6 +21,20 @@
 #include "daw_utf_range.h"
 
 namespace daw {
+	namespace details {
+		template<typename Container>
+		inline std::string copy_to_string( Container const &c ) {
+			auto result = std::string( );
+			std::copy( std::cbegin( c ), std::cend( c ),
+			           std::back_inserter( result ) );
+			return result;
+		}
+
+		inline std::string copy_to_string( char const *const str ) {
+			return std::string( str );
+		}
+	} // namespace details
+
 	struct utf_string {
 		using iterator = range::utf_iterator;
 		using const_iterator = range::utf_iterator const;
@@ -34,21 +48,10 @@ namespace daw {
 		daw::range::utf_range m_range;
 
 	public:
-		utf_string( );
-		utf_string( utf_string const &other );
-		explicit utf_string( daw::string_view other );
-		explicit utf_string( daw::range::utf_range other );
-		utf_string( char const *other );
-
 		template<size_t N>
 		utf_string( char const ( &str )[N] )
 		  : m_values( str, N - 1 )
 		  , m_range( daw::range::create_char_range( m_values ) ) {}
-
-		utf_string &operator=( utf_string const &rhs );
-		utf_string &operator=( daw::string_view rhs );
-		utf_string &operator=( char const *rhs );
-		utf_string &operator=( std::string const &rhs );
 
 		template<size_t N>
 		utf_string &operator=( char const ( &str )[N] ) {
@@ -58,37 +61,163 @@ namespace daw {
 		}
 
 		~utf_string( ) = default;
-
 		utf_string( utf_string && ) noexcept = default;
 		utf_string &operator=( utf_string && ) noexcept = default;
 
-		const_iterator begin( ) const noexcept;
-		const_iterator cbegin( ) const noexcept;
-		const_iterator end( ) const noexcept;
-		const_iterator cend( ) const noexcept;
-		size_t size( ) const noexcept;
-		bool empty( ) const noexcept;
-		range::char_iterator raw_begin( ) const noexcept;
-		range::char_iterator raw_end( ) const noexcept;
-		size_t raw_size( ) const noexcept;
-		utf_string substr( size_t pos, size_t length ) const;
+		inline utf_string( )
+		  : m_values( )
+		  , m_range( daw::range::create_char_range( m_values ) ) {}
 
-		std::string const &to_string( ) const noexcept;
-		std::u32string to_u32string( ) const;
-		range::utf_range const &utf_range( ) const noexcept;
-		int compare( utf_string const &rhs ) const noexcept;
+		inline utf_string( daw::string_view other )
+		  : m_values( copy_to_string( other ) )
+		  , m_range( daw::range::create_char_range( m_values ) ) {}
 
-		void sort( );
+		inline utf_string( daw::range::utf_range other )
+		  : m_values( copy_to_string( other ) )
+		  , m_range( daw::range::create_char_range( m_values ) ) {}
+
+		inline utf_string( utf_string const &other )
+		  : m_values( other.m_values )
+		  , m_range( daw::range::create_char_range( m_values ) ) {}
+
+		inline utf_string &operator=( utf_string const &rhs ) {
+			if( this != &rhs ) {
+				m_values = rhs.m_values;
+				m_range = daw::range::create_char_range( m_values );
+			}
+			return *this;
+		}
+
+		inline utf_string( char const *other )
+		  : m_values( copy_to_string( other ) )
+		  , m_range( daw::range::create_char_range( m_values ) ) {}
+
+		inline const_iterator begin( ) const noexcept {
+			return m_range.begin( );
+		}
+
+		inline const_iterator cbegin( ) const noexcept {
+			return m_range.begin( );
+		}
+
+		inline const_iterator end( ) const noexcept {
+			return m_range.end( );
+		}
+
+		inline const_iterator cend( ) const noexcept {
+			return m_range.end( );
+		}
+
+		inline size_t size( ) const noexcept {
+			return m_range.size( );
+		}
+
+		inline bool empty( ) const noexcept {
+			return m_range.empty( );
+		}
+
+		inline range::char_iterator raw_begin( ) const noexcept {
+			return m_range.raw_begin( );
+		}
+
+		inline range::char_iterator raw_end( ) const noexcept {
+			return m_range.raw_end( );
+		}
+
+		inline utf_string &operator=( daw::string_view rhs ) {
+			auto tmp = utf_string( rhs );
+			using std::swap;
+			swap( *this, tmp );
+			return *this;
+		}
+
+		inline utf_string &operator=( char const *rhs ) {
+			auto tmp = utf_string( rhs );
+			using std::swap;
+			swap( *this, tmp );
+			return *this;
+		}
+
+		inline utf_string &operator=( std::string const &rhs ) {
+			auto tmp = utf_string( rhs );
+			using std::swap;
+			swap( *this, tmp );
+			return *this;
+		}
+
+		inline size_t raw_size( ) const noexcept {
+			return m_range.raw_size( );
+		}
+
+		inline utf_string substr( size_t pos, size_t length ) const {
+			return utf_string( m_range.substr( pos, length ) );
+		}
+
+		inline std::string const &to_string( ) const noexcept {
+			return m_values;
+		}
+
+		inline std::u32string to_u32string( ) const {
+			return m_range.to_u32string( );
+		}
+
+		inline range::utf_range const &utf_range( ) const noexcept {
+			return m_range;
+		}
+
+		inline int compare( utf_string const &rhs ) const noexcept {
+			return m_range.compare( rhs.m_range );
+		}
+
+		inline void sort( ) {
+			auto result = to_u32string( );
+			std::copy( cbegin( ), cend( ), std::back_inserter( result ) );
+			std::sort( result.begin( ), result.end( ) );
+			m_values.clear( );
+			utf8::unchecked::utf32to8( result.cbegin( ), result.cend( ),
+			                           std::back_inserter( m_values ) );
+			m_range = daw::range::create_char_range( m_values );
+		}
+
 	}; // utf_string
 
-	bool operator==( utf_string const &lhs, utf_string const &rhs ) noexcept;
-	bool operator!=( utf_string const &lhs, utf_string const &rhs ) noexcept;
-	bool operator<( utf_string const &lhs, utf_string const &rhs ) noexcept;
-	bool operator>( utf_string const &lhs, utf_string const &rhs ) noexcept;
-	bool operator<=( utf_string const &lhs, utf_string const &rhs ) noexcept;
-	bool operator>=( utf_string const &lhs, utf_string const &rhs ) noexcept;
-	std::string to_string( utf_string const &str );
-	daw::string_view to_string_view( utf_string const &str );
+	inline bool operator==( utf_string const &lhs,
+	                        utf_string const &rhs ) noexcept {
+		return lhs.compare( rhs ) == 0;
+	}
+
+	inline bool operator!=( utf_string const &lhs,
+	                        utf_string const &rhs ) noexcept {
+		return lhs.compare( rhs ) != 0;
+	}
+
+	inline bool operator<( utf_string const &lhs,
+	                       utf_string const &rhs ) noexcept {
+		return lhs.compare( rhs ) < 0;
+	}
+
+	inline bool operator>( utf_string const &lhs,
+	                       utf_string const &rhs ) noexcept {
+		return lhs.compare( rhs ) > 0;
+	}
+
+	inline bool operator<=( utf_string const &lhs,
+	                        utf_string const &rhs ) noexcept {
+		return lhs.compare( rhs ) <= 0;
+	}
+
+	inline bool operator>=( utf_string const &lhs,
+	                        utf_string const &rhs ) noexcept {
+		return lhs.compare( rhs ) >= 0;
+	}
+
+	inline std::string to_string( utf_string const &str ) {
+		return str.to_string( );
+	}
+
+	inline daw::string_view to_string_view( utf_string const &str ) {
+		return to_string_view( str.utf_range( ) );
+	}
 
 	template<typename OStream,
 	         std::enable_if_t<daw::traits::is_ostream_like_v<OStream, char>,
@@ -99,15 +228,19 @@ namespace daw {
 	}
 } // namespace daw
 
-std::string to_string( daw::utf_string const &str );
-std::string to_string( daw::utf_string &&str );
+inline std::string to_string( daw::utf_string const &str ) {
+	return str.to_string( );
+}
+
+inline std::string to_string( daw::utf_string &&str ) {
+	return std::move( str ).to_string( );
+}
 
 namespace std {
 	template<>
 	struct hash<daw::utf_string> {
-		std::hash<std::string> m_hash;
-		size_t operator( )( daw::utf_string const &value ) const noexcept {
-			return m_hash( value.to_string( ) );
+		inline size_t operator( )( daw::utf_string const &value ) const noexcept {
+			return std::hash<std::string>{ }( value.to_string( ) );
 		}
 	};
 } // namespace std

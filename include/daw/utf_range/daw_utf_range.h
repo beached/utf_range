@@ -1,10 +1,10 @@
 // Copyright (c) Darrell Wright
-// 
+//
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE or copy at http://www.boost.org/LICENSE_1_0.txt)
-// 
+//
 // Official repository: https://github.com/beached/header_libraries
-// 
+//
 
 #pragma once
 
@@ -39,8 +39,8 @@ namespace daw {
 			using difference_type = utf_iterator::difference_type;
 
 		private:
-			iterator m_begin{};
-			iterator m_end{};
+			iterator m_begin{ };
+			iterator m_end{ };
 			size_t m_size = 0;
 
 		public:
@@ -160,8 +160,18 @@ namespace daw {
 				return result;
 			}
 
-			std::u32string to_u32string( ) const noexcept;
-			std::string to_raw_u8string( ) const noexcept;
+			inline std::string to_raw_u8string( ) const noexcept {
+				return std::string( m_begin.base( ), m_end.base( ) );
+			}
+
+			inline std::u32string to_u32string( ) const noexcept {
+				auto result = std::u32string( );
+				daw::algorithm::transform(
+				  begin( ), end( ), std::back_inserter( result ),
+				  []( auto c ) { return static_cast<char32_t>( c ); } );
+
+				return result;
+			}
 
 			constexpr int compare( utf_range const &rhs ) const noexcept {
 				auto it_lhs = begin( );
@@ -205,25 +215,25 @@ namespace daw {
 
 		constexpr utf_range create_char_range( utf_iterator first,
 		                                       utf_iterator last ) noexcept {
-			return {first, last};
+			return { first, last };
 		}
 
 		constexpr utf_range create_char_range( daw::string_view str ) noexcept {
 			auto it_begin = utf_iterator( str.begin( ) );
 			auto it_end = utf_iterator( str.end( ) );
-			return {it_begin, it_end};
+			return { it_begin, it_end };
 		}
 
 		template<size_t N>
 		constexpr utf_range create_char_range( char const ( &str )[N] ) noexcept {
-			return {str, N - 1};
+			return { str, N - 1 };
 		}
 
 		constexpr utf_range create_char_range( char_iterator first,
 		                                       char_iterator last ) noexcept {
 			auto it_begin = utf_iterator( first );
 			auto it_end = utf_iterator( last );
-			return {it_begin, it_end};
+			return { it_begin, it_end };
 		}
 
 		constexpr utf_range create_char_range( char_iterator first ) noexcept {
@@ -270,7 +280,11 @@ namespace daw {
 			str.advance( str.size( ) );
 		}
 
-		std::string to_string( utf_range const &str );
+		inline std::string to_string( utf_range const &str ) {
+			return std::string{ str.begin( ).base( ),
+			                    static_cast<size_t>( std::distance(
+			                      str.begin( ).base( ), str.end( ).base( ) ) ) };
+		}
 
 		template<typename OStream,
 		         std::enable_if_t<daw::traits::is_ostream_like_v<OStream, char>,
@@ -291,18 +305,29 @@ namespace daw {
 			return range.size( ) == 0;
 		}
 
-		std::u32string to_u32string( utf_iterator first, utf_iterator last );
+		inline std::u32string to_u32string( utf_iterator first,
+		                                    utf_iterator last ) {
+			std::u32string result;
+			std::transform( first, last, std::back_inserter( result ),
+			                []( auto c ) { return static_cast<char32_t>( c ); } );
+			return result;
+		}
 
 	} // namespace range
 
-	std::string from_u32string( std::u32string const &other );
+	inline std::string from_u32string( std::u32string const &other ) {
+		std::string result;
+		utf8::unchecked::utf32to8( other.begin( ), other.end( ),
+		                           std::back_inserter( result ) );
+		return result;
+	}
 } // namespace daw
 
 namespace std {
 	template<>
 	struct hash<daw::range::utf_range> {
-		constexpr size_t operator( )( daw::range::utf_range const &value ) const
-		  noexcept {
+		constexpr size_t
+		operator( )( daw::range::utf_range const &value ) const noexcept {
 			return daw::range::hash_sequence( value.begin( ).base( ),
 			                                  value.end( ).base( ) );
 		}
