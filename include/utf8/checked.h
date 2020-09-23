@@ -30,7 +30,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <daw/daw_exception.h>
 
-#include <cisco646>
+#include <ciso646>
 #include <stdexcept>
 
 namespace utf8 {
