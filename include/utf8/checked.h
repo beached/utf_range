@@ -29,6 +29,8 @@ DEALINGS IN THE SOFTWARE.
 #include "core.h"
 
 #include <daw/daw_exception.h>
+
+#include <cisco646>
 #include <stdexcept>
 
 namespace utf8 {
