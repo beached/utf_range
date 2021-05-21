@@ -9,7 +9,7 @@
 cmake_minimum_required( VERSION 3.10 ) 
 
 project( "utf_range"
-	VERSION "1.1.1" 
+	VERSION "1.1.2" 
 	DESCRIPTION "UTF8 Iterator/Range for traversing utf8 text"
 	HOMEPAGE_URL "https://github.com/beached/utf_range"
 	LANGUAGES C CXX)
@@ -51,8 +51,10 @@ include( CMakePackageConfigHelpers)
 configure_package_config_file( 
 	"${PROJECT_SOURCE_DIR}/cmake/daw_${PROJECT_NAME}Config.cmake.in"
 	"${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-	INSTALL_DESTINATION
-	${utf_range_INSTALL_CMAKEDIR} )
+	INSTALL_DESTINATION lib/cmake/daw_${PROJECT_NAME}
+	#	INSTALL_DESTINATION
+	#	${utf_range_INSTALL_CMAKEDIR} 
+)
 
 write_basic_package_version_file( "${PROJECT_NAME}ConfigVersion.cmake"
 	VERSION ${PROJECT_VERSION}
@@ -61,11 +63,15 @@ write_basic_package_version_file( "${PROJECT_NAME}ConfigVersion.cmake"
 install( EXPORT ${PROJECT_NAME}_Targets
 	FILE ${PROJECT_NAME}Targets.cmake
 	NAMESPACE daw::
-	DESTINATION ${utf_range_INSTALL_CMAKEDIR})
+	DESTINATION lib/cmake/daw_${PROJECT_NAME}
+	#DESTINATION ${utf_range_INSTALL_CMAKEDIR}
+)
 
 install( FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
 	"${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-	DESTINATION ${utf_range_INSTALL_CMAKEDIR}$ )
+	DESTINATION lib/cmake/daw_${PROJECT_NAME}
+	#	${utf_range_INSTALL_CMAKEDIR}$ 
+)	
 
 install( DIRECTORY ${PROJECT_SOURCE_DIR}/include/daw DESTINATION include )
 install( DIRECTORY ${PROJECT_SOURCE_DIR}/include/utf8 DESTINATION include )
