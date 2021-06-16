@@ -260,6 +260,9 @@ namespace utf8 {
 		}; // class iterator
 
 		template<typename octet_iterator>
+		iterator( octet_iterator ) -> iterator<octet_iterator>;
+
+		template<typename octet_iterator>
 		constexpr iterator<octet_iterator>
 		operator+( iterator<octet_iterator> it,
 		           typename iterator<octet_iterator>::difference_type n ) noexcept {
