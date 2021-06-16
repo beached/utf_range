@@ -336,7 +336,7 @@ namespace utf8 {
 		}
 
 		iterator end( ) const {
-			return iterator( range_end, range_end );
+			return iterator( range_end, range_start, range_end );
 		}
 
 		constexpr value_type operator*( ) const {
