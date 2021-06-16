@@ -329,6 +329,14 @@ namespace utf8 {
 			return it;
 		}
 
+		iterator begin( ) const {
+			return it;
+		}
+
+		iterator end( ) const {
+			return range_end;
+		}
+
 		constexpr value_type operator*( ) const {
 			octet_iterator temp = it;
 			return utf8::next( temp, range_end );
@@ -367,6 +375,6 @@ namespace utf8 {
 			return temp;
 		}
 	}; // class iterator
-	template<typeanme octet_iterator>
+	template<typename octet_iterator>
 	iterator( octet_iterator ) -> iterator<octet_iterator>;
 } // namespace utf8
