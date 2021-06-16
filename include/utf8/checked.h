@@ -247,7 +247,8 @@ namespace utf8 {
 				  utf8::internal::is_trail_surrogate( trail_surrogate ),
 				  static_cast<uint16_t>( trail_surrogate ) );
 
-				cp = ( cp << 10 ) + static_cast<int32_t>(trail_surrogate + internal::SURROGATE_OFFSET);
+				cp = ( cp << 10 ) + static_cast<int32_t>( trail_surrogate +
+				                                          internal::SURROGATE_OFFSET );
 			} else if( utf8::internal::is_trail_surrogate( cp ) ) {
 				// Lone trail surrogate
 				daw::exception::daw_throw<invalid_utf16>( static_cast<uint16_t>( cp ) );
@@ -366,4 +367,6 @@ namespace utf8 {
 			return temp;
 		}
 	}; // class iterator
+	template<typeanme octet_iterator>
+	iterator( octet_iterator ) -> iterator<octet_iterator>;
 } // namespace utf8
