@@ -317,12 +317,14 @@ namespace utf8 {
 		                             octet_iterator const &rangeend )
 		  : it( octet_it )
 		  , range_start( rangestart )
-		  , range_end( rangeend ) {
+		  , range_end( rangeend ) {}
 
-			daw::exception::precondition_check<std::out_of_range>(
-			  range_start <= it and it <= range_end,
-			  "Invalid utf-8 iterator position" );
-		}
+		constexpr explicit iterator( octet_iterator const &octet_it,
+		                             octet_iterator const &rangeend )
+		  : it( octet_it )
+		  , range_start( octet_it )
+		  , range_end( rangeend ) {}
+
 		// the default "big three" are OK
 		constexpr octet_iterator base( ) const
 		  noexcept( std::is_nothrow_copy_constructible<octet_iterator>::value ) {
@@ -330,11 +332,11 @@ namespace utf8 {
 		}
 
 		iterator begin( ) const {
-			return it;
+			return *this;
 		}
 
 		iterator end( ) const {
-			return range_end;
+			return iterator( range_end, range_end );
 		}
 
 		constexpr value_type operator*( ) const {
