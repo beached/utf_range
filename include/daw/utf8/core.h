@@ -29,7 +29,7 @@ DEALINGS IN THE SOFTWARE.
 #include <cinttypes>
 #include <iterator>
 
-namespace utf8 {
+namespace daw::utf8 {
 	// The typedefs for 8-bit, 16-bit and 32-bit unsigned integers
 	// You may need to change them to match your system.
 	// These typedefs have the same names as ones from cstdint, or boost/cstdint
@@ -297,7 +297,7 @@ namespace utf8 {
 	/// The library API - functions intended to be called by the users
 
 	// Byte order mark
-	constexpr uint8_t const bom[3] = {0xEF, 0xBB, 0xBF};
+	constexpr uint8_t const bom[3] = { 0xEF, 0xBB, 0xBF };
 
 	template<typename octet_iterator>
 	constexpr octet_iterator find_invalid( octet_iterator start,
@@ -333,4 +333,5 @@ namespace utf8 {
 		         ( utf8::internal::mask8( *it++ ) ) == bom[1] &&
 		         ( utf8::internal::mask8( *it ) ) == bom[2] );
 	}
-} // namespace utf8
+} // namespace daw::utf8
+

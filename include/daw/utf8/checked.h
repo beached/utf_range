@@ -33,7 +33,7 @@ DEALINGS IN THE SOFTWARE.
 #include <ciso646>
 #include <stdexcept>
 
-namespace utf8 {
+namespace daw::utf8 {
 	// Exceptions that may be thrown from the library functions.
 	class invalid_code_point {
 		uint32_t cp;
@@ -379,4 +379,4 @@ namespace utf8 {
 	}; // class iterator
 	template<typename octet_iterator>
 	iterator( octet_iterator ) -> iterator<octet_iterator>;
-} // namespace utf8
+} // namespace daw::utf8
