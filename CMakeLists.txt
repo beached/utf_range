@@ -9,7 +9,7 @@
 cmake_minimum_required( VERSION 3.10 ) 
 
 project( "utf_range"
-	VERSION "2.0.1" 
+	VERSION "2.0.2" 
 	DESCRIPTION "UTF8 Iterator/Range for traversing utf8 text"
 	HOMEPAGE_URL "https://github.com/beached/utf_range"
 	LANGUAGES C CXX)
@@ -18,7 +18,10 @@ set( CMAKE_CXX_STANDARD 17 CACHE STRING "The C++ standard whose features are req
 set( CMAKE_CXX_STANDARD_REQUIRED ON)
 set( CMAKE_CXX_EXTENSIONS OFF)
 
-add_subdirectory(extern)
+option(DAW_USE_PACKAGE_MANAGEMENT "Do not use FetchContent and assume dependencies are installed" OFF)
+if( NOT DAW_USE_PACKAGE_MANAGEMENT ) 
+  add_subdirectory(extern)
+endif( )
 
 include( GNUInstallDirs)
 set( utf_range_INSTALL_CMAKEDIR
@@ -30,9 +33,14 @@ set( PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 
 add_library( ${PROJECT_NAME} INTERFACE ) 
 add_library( daw::${PROJECT_NAME} ALIAS ${PROJECT_NAME} )
-target_link_libraries( ${PROJECT_NAME} INTERFACE daw::header_libraries ) 
 
-target_link_libraries( ${PROJECT_NAME} INTERFACE daw::header_libraries ${COMPILER_SPECIFIC_LIBS} )
+
+if( DAW_USE_PACKAGE_MANAGEMENT )
+	target_link_libraries( ${PROJECT_NAME} INTERFACE ${COMPILER_SPECIFIC_LIBS} )
+else( )
+	target_link_libraries( ${PROJECT_NAME} INTERFACE daw::header_libraries ${COMPILER_SPECIFIC_LIBS} )
+endif( )
+
 target_compile_features( ${PROJECT_NAME} INTERFACE cxx_std_17)
 target_include_directories( ${PROJECT_NAME}
 	INTERFACE
