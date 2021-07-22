@@ -6,10 +6,10 @@
 # Official repository: https://github.com/beached/utf_range
 #
 
-cmake_minimum_required( VERSION 3.10 ) 
+cmake_minimum_required( VERSION 3.14 ) 
 
-project( "utf_range"
-	VERSION "2.0.2" 
+project( "daw-utf-range"
+	VERSION "2.1.0" 
 	DESCRIPTION "UTF8 Iterator/Range for traversing utf8 text"
 	HOMEPAGE_URL "https://github.com/beached/utf_range"
 	LANGUAGES C CXX)
@@ -33,12 +33,13 @@ set( PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 
 add_library( ${PROJECT_NAME} INTERFACE ) 
 add_library( daw::${PROJECT_NAME} ALIAS ${PROJECT_NAME} )
+add_library( daw::utf_range ALIAS ${PROJECT_NAME} )
 
 
 if( DAW_USE_PACKAGE_MANAGEMENT )
 	target_link_libraries( ${PROJECT_NAME} INTERFACE ${COMPILER_SPECIFIC_LIBS} )
 else( )
-	target_link_libraries( ${PROJECT_NAME} INTERFACE daw::header_libraries ${COMPILER_SPECIFIC_LIBS} )
+	target_link_libraries( ${PROJECT_NAME} INTERFACE daw::daw-header-libraries ${COMPILER_SPECIFIC_LIBS} )
 endif( )
 
 target_compile_features( ${PROJECT_NAME} INTERFACE cxx_std_17)
@@ -57,11 +58,9 @@ install( TARGETS ${PROJECT_NAME}
 include( CMakePackageConfigHelpers)
 
 configure_package_config_file( 
-	"${PROJECT_SOURCE_DIR}/cmake/daw_${PROJECT_NAME}Config.cmake.in"
+	"${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in"
 	"${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-	INSTALL_DESTINATION lib/cmake/daw_${PROJECT_NAME}
-	#	INSTALL_DESTINATION
-	#	${utf_range_INSTALL_CMAKEDIR} 
+	INSTALL_DESTINATION lib/cmake/${PROJECT_NAME}
 )
 
 write_basic_package_version_file( "${PROJECT_NAME}ConfigVersion.cmake"
@@ -71,14 +70,12 @@ write_basic_package_version_file( "${PROJECT_NAME}ConfigVersion.cmake"
 install( EXPORT ${PROJECT_NAME}_Targets
 	FILE ${PROJECT_NAME}Targets.cmake
 	NAMESPACE daw::
-	DESTINATION lib/cmake/daw_${PROJECT_NAME}
-	#DESTINATION ${utf_range_INSTALL_CMAKEDIR}
+	DESTINATION lib/cmake/${PROJECT_NAME}
 )
 
 install( FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
 	"${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-	DESTINATION lib/cmake/daw_${PROJECT_NAME}
-	#	${utf_range_INSTALL_CMAKEDIR}$ 
+	DESTINATION lib/cmake/${PROJECT_NAME}
 )	
 
 install( DIRECTORY ${PROJECT_SOURCE_DIR}/include/daw DESTINATION include )
