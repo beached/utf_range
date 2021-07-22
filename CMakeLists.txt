@@ -9,7 +9,7 @@
 cmake_minimum_required( VERSION 3.10 ) 
 
 project( "utf_range"
-	VERSION "2.0.0" 
+	VERSION "2.0.1" 
 	DESCRIPTION "UTF8 Iterator/Range for traversing utf8 text"
 	HOMEPAGE_URL "https://github.com/beached/utf_range"
 	LANGUAGES C CXX)
