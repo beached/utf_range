@@ -9,7 +9,7 @@
 cmake_minimum_required( VERSION 3.10 ) 
 
 project( "utf_range"
-	VERSION "1.2.2" 
+	VERSION "2.0.0" 
 	DESCRIPTION "UTF8 Iterator/Range for traversing utf8 text"
 	HOMEPAGE_URL "https://github.com/beached/utf_range"
 	LANGUAGES C CXX)
@@ -74,6 +74,4 @@ install( FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
 )	
 
 install( DIRECTORY ${PROJECT_SOURCE_DIR}/include/daw DESTINATION include )
-install( DIRECTORY ${PROJECT_SOURCE_DIR}/include/utf8 DESTINATION include )
-install( FILES ${PROJECT_SOURCE_DIR}/include/utf8.h DESTINATION include )
 			
