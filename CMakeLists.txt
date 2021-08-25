@@ -23,7 +23,7 @@ option(DAW_USE_PACKAGE_MANAGEMENT "Do not use FetchContent and assume dependenci
 if( NOT DAW_USE_PACKAGE_MANAGEMENT ) 
   add_subdirectory(extern)
 else( )	
-	find_package( daw-header-libraries )
+	find_package( daw-header-libraries REQUIRED )
 endif( )
 
 include( GNUInstallDirs)
