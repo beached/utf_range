@@ -22,6 +22,8 @@ set( CMAKE_CXX_EXTENSIONS OFF)
 option(DAW_USE_PACKAGE_MANAGEMENT "Do not use FetchContent and assume dependencies are installed" OFF)
 if( NOT DAW_USE_PACKAGE_MANAGEMENT ) 
   add_subdirectory(extern)
+else( )	
+	find_package( daw-header-libraries )
 endif( )
 
 include( GNUInstallDirs)
