@@ -14,6 +14,7 @@
 #include <daw/cpp_17.h>
 #include <daw/daw_algorithm.h>
 #include <daw/daw_fnv1a_hash.h>
+#include <daw/daw_move.h>
 #include <daw/daw_string_view.h>
 #include <daw/daw_traits.h>
 
@@ -44,10 +45,12 @@ namespace daw {
 		using difference_type = range::utf_iterator::difference_type;
 
 	private:
-		std::string m_values;
-		daw::range::utf_range m_range;
+		std::string m_values = { };
+		daw::range::utf_range m_range = daw::range::create_char_range( m_values );
 
 	public:
+		utf_string( ) = default;
+
 		template<size_t N>
 		utf_string( char const ( &str )[N] )
 		  : m_values( str, N - 1 )
@@ -60,14 +63,6 @@ namespace daw {
 			return *this;
 		}
 
-		~utf_string( ) = default;
-		utf_string( utf_string && ) noexcept = default;
-		utf_string &operator=( utf_string && ) noexcept = default;
-
-		inline utf_string( )
-		  : m_values( )
-		  , m_range( daw::range::create_char_range( m_values ) ) {}
-
 		inline utf_string( daw::string_view other )
 		  : m_values( details::copy_to_string( other ) )
 		  , m_range( daw::range::create_char_range( m_values ) ) {}
@@ -76,51 +71,39 @@ namespace daw {
 		  : m_values( details::copy_to_string( other ) )
 		  , m_range( daw::range::create_char_range( m_values ) ) {}
 
-		inline utf_string( utf_string const &other )
-		  : m_values( other.m_values )
-		  , m_range( daw::range::create_char_range( m_values ) ) {}
-
-		inline utf_string &operator=( utf_string const &rhs ) {
-			if( this != &rhs ) {
-				m_values = rhs.m_values;
-				m_range = daw::range::create_char_range( m_values );
-			}
-			return *this;
-		}
-
 		inline utf_string( char const *other )
 		  : m_values( details::copy_to_string( other ) )
 		  , m_range( daw::range::create_char_range( m_values ) ) {}
 
-		inline const_iterator begin( ) const noexcept {
+		[[nodiscard]] inline const_iterator begin( ) const noexcept {
 			return m_range.begin( );
 		}
 
-		inline const_iterator cbegin( ) const noexcept {
+		[[nodiscard]] inline const_iterator cbegin( ) const noexcept {
 			return m_range.begin( );
 		}
 
-		inline const_iterator end( ) const noexcept {
+		[[nodiscard]] inline const_iterator end( ) const noexcept {
 			return m_range.end( );
 		}
 
-		inline const_iterator cend( ) const noexcept {
+		[[nodiscard]] inline const_iterator cend( ) const noexcept {
 			return m_range.end( );
 		}
 
-		inline size_t size( ) const noexcept {
+		[[nodiscard]] inline size_t size( ) const noexcept {
 			return m_range.size( );
 		}
 
-		inline bool empty( ) const noexcept {
+		[[nodiscard]] inline bool empty( ) const noexcept {
 			return m_range.empty( );
 		}
 
-		inline range::char_iterator raw_begin( ) const noexcept {
+		[[nodiscard]] inline range::char_iterator raw_begin( ) const noexcept {
 			return m_range.raw_begin( );
 		}
 
-		inline range::char_iterator raw_end( ) const noexcept {
+		[[nodiscard]] inline range::char_iterator raw_end( ) const noexcept {
 			return m_range.raw_end( );
 		}
 
@@ -145,27 +128,33 @@ namespace daw {
 			return *this;
 		}
 
-		inline size_t raw_size( ) const noexcept {
+		[[nodiscard]] inline size_t raw_size( ) const noexcept {
 			return m_range.raw_size( );
 		}
 
-		inline utf_string substr( size_t pos, size_t length ) const {
+		[[nodiscard]] inline utf_string substr( size_t pos, size_t length ) const {
 			return utf_string( m_range.substr( pos, length ) );
 		}
 
-		inline std::string const &to_string( ) const noexcept {
+		[[nodiscard]] inline std::string const &to_string( ) const &noexcept {
 			return m_values;
 		}
 
-		inline std::u32string to_u32string( ) const {
+		[[nodiscard]] inline std::string to_string( ) &&noexcept {
+			auto result = DAW_MOVE( m_values );
+			m_range = range::create_char_range( m_values );
+			return DAW_MOVE( m_values );
+		}
+
+		[[nodiscard]] inline std::u32string to_u32string( ) const {
 			return m_range.to_u32string( );
 		}
 
-		inline range::utf_range const &utf_range( ) const noexcept {
+		[[nodiscard]] inline range::utf_range const &utf_range( ) const noexcept {
 			return m_range;
 		}
 
-		inline int compare( utf_string const &rhs ) const noexcept {
+		[[nodiscard]] inline int compare( utf_string const &rhs ) const noexcept {
 			return m_range.compare( rhs.m_range );
 		}
 
@@ -179,37 +168,36 @@ namespace daw {
 			m_range = daw::range::create_char_range( m_values );
 		}
 
+		[[nodiscard]] friend inline bool
+		operator==( utf_string const &lhs, utf_string const &rhs ) noexcept {
+			return lhs.compare( rhs ) == 0;
+		}
+
+		[[nodiscard]] friend inline bool
+		operator!=( utf_string const &lhs, utf_string const &rhs ) noexcept {
+			return lhs.compare( rhs ) != 0;
+		}
+
+		[[nodiscard]] friend inline bool
+		operator<( utf_string const &lhs, utf_string const &rhs ) noexcept {
+			return lhs.compare( rhs ) < 0;
+		}
+
+		[[nodiscard]] friend inline bool
+		operator>( utf_string const &lhs, utf_string const &rhs ) noexcept {
+			return lhs.compare( rhs ) > 0;
+		}
+
+		[[nodiscard]] friend inline bool
+		operator<=( utf_string const &lhs, utf_string const &rhs ) noexcept {
+			return lhs.compare( rhs ) <= 0;
+		}
+
+		[[nodiscard]] friend inline bool
+		operator>=( utf_string const &lhs, utf_string const &rhs ) noexcept {
+			return lhs.compare( rhs ) >= 0;
+		}
 	}; // utf_string
-
-	inline bool operator==( utf_string const &lhs,
-	                        utf_string const &rhs ) noexcept {
-		return lhs.compare( rhs ) == 0;
-	}
-
-	inline bool operator!=( utf_string const &lhs,
-	                        utf_string const &rhs ) noexcept {
-		return lhs.compare( rhs ) != 0;
-	}
-
-	inline bool operator<( utf_string const &lhs,
-	                       utf_string const &rhs ) noexcept {
-		return lhs.compare( rhs ) < 0;
-	}
-
-	inline bool operator>( utf_string const &lhs,
-	                       utf_string const &rhs ) noexcept {
-		return lhs.compare( rhs ) > 0;
-	}
-
-	inline bool operator<=( utf_string const &lhs,
-	                        utf_string const &rhs ) noexcept {
-		return lhs.compare( rhs ) <= 0;
-	}
-
-	inline bool operator>=( utf_string const &lhs,
-	                        utf_string const &rhs ) noexcept {
-		return lhs.compare( rhs ) >= 0;
-	}
 
 	inline std::string to_string( utf_string const &str ) {
 		return str.to_string( );
@@ -233,7 +221,7 @@ inline std::string to_string( daw::utf_string const &str ) {
 }
 
 inline std::string to_string( daw::utf_string &&str ) {
-	return std::move( str ).to_string( );
+	return DAW_MOVE( str ).to_string( );
 }
 
 namespace std {
