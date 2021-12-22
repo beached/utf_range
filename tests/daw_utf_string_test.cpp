@@ -26,17 +26,17 @@
 
 #include "daw/utf_range/daw_utf_string.h"
 
-void  utf_string_test_001 ( ) {
-	daw::utf_string b = u8"Приве́т नमस्ते שָׁלוֹם";
+void utf_string_test_001( ) {
+	daw::utf_string b = R"(Приве́т नमस्ते שָׁלוֹם)";
 	for( auto c : b ) {
 		std::cout << c << '\n';
 	}
 }
 
-void  utf_comparison_test_001 ( ) {
-	daw::utf_string const a = u8"a";
-	daw::utf_string const aa = u8"aa";
-	daw::utf_string const bb = u8"bb";
+void utf_comparison_test_001( ) {
+	daw::utf_string const a = "a";
+	daw::utf_string const aa = "aa";
+	daw::utf_string const bb = "bb";
 
 	daw::expecting( a == a );
 	daw::expecting( a != bb );
@@ -46,24 +46,26 @@ void  utf_comparison_test_001 ( ) {
 	daw::expecting( bb > aa );
 }
 
-void  utf_string_sort_001 ( ) {
-	daw::utf_string tst_01 = u8"Приве́т नमस्ते שָׁלוֹם";
+void utf_string_sort_001( ) {
+	daw::utf_string tst_01 = R"(Приве́т नमस्ते שָׁלוֹם)";
 	auto const tst_02 = tst_01;
 	tst_01.sort( );
 	daw::expecting( !tst_01.empty( ) );
 	daw::expecting( tst_01.size( ) == tst_02.size( ) );
 	daw::expecting( tst_01 != tst_02 );
-	std::cout << "orig:   " << tst_02 << "\nlexigraphically\nsorted: " << tst_01 << '\n';
+	std::cout << "orig:   " << tst_02 << "\nlexigraphically\nsorted: " << tst_01
+	          << '\n';
 }
 
-void  utf_string_sort_002 ( ) {
-	daw::utf_string tst_01 = u8"zyxwvutsrqponmlkjihgfedcba";
+void utf_string_sort_002( ) {
+	daw::utf_string tst_01 = R"(zyxwvutsrqponmlkjihgfedcba)";
 	auto const tst_02 = tst_01;
 	tst_01.sort( );
 	daw::expecting( !tst_01.empty( ) );
 	daw::expecting( tst_01.size( ) == tst_02.size( ) );
 	daw::expecting( tst_01 != tst_02 );
-	std::cout << "orig:   " << tst_02 << "\nlexigraphically\nsorted: " << tst_01 << '\n';
+	std::cout << "orig:   " << tst_02 << "\nlexigraphically\nsorted: " << tst_01
+	          << '\n';
 }
 
 int main( ) {
@@ -72,4 +74,3 @@ int main( ) {
 	utf_string_sort_001( );
 	utf_string_sort_002( );
 }
-
