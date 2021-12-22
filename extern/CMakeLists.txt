@@ -11,7 +11,7 @@ include( FetchContent )
 FetchContent_Declare(
 	daw_header_libraries
 	GIT_REPOSITORY https://github.com/beached/header_libraries.git
-	GIT_TAG dev
+	GIT_TAG master
 )
 
 FetchContent_MakeAvailable(daw_header_libraries)

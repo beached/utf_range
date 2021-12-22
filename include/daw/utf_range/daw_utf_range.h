@@ -17,7 +17,9 @@
 #include <daw/daw_traits.h>
 
 #include <iostream>
+#include <iterator>
 #include <string>
+#include <type_traits>
 
 namespace daw {
 	namespace range {
@@ -205,7 +207,7 @@ namespace daw {
 			}
 
 			constexpr daw::string_view to_string_view( ) const noexcept {
-				return daw::make_string_view_it( raw_begin( ), raw_end( ) );
+				return { raw_begin( ), static_cast<std::size_t>( std::distance( raw_begin( ), raw_end( ) ) ) };
 			}
 		}; // struct utf_range
 
