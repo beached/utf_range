@@ -6,12 +6,17 @@
 # Official repository: https://github.com/beached/utf_range
 #
 
-include( FetchContent )
+include(FetchContent)
+
+option(DAW_ENABLE_TESTING "Build unit tests" OFF)
+if (DAW_ENABLE_TESTING)
+    set(DAW_ENABLE_TESTING OFF)
+endif ()
 
 FetchContent_Declare(
-	daw_header_libraries
-	GIT_REPOSITORY https://github.com/beached/header_libraries.git
-	GIT_TAG master
+        daw_header_libraries
+        GIT_REPOSITORY https://github.com/beached/header_libraries.git
+        GIT_TAG master
 )
 
 FetchContent_MakeAvailable(daw_header_libraries)

@@ -2,24 +2,142 @@ name: Ubuntu
 
 on:
   push:
-    branches-ignore: develop
+    branches: [ release, develop ]
   pull_request:
-    branches-ignore: develop
+    push:
+      branches-ignore: develop
+    pull_request:
+      branches-ignore: develop
 
 jobs:
-  build:
-    runs-on: [ubuntu-latest]
+  CI_Tests:
+    permissions:
+      actions: none
+      checks: none
+      contents: none
+      deployments: none
+      issues: none
+      packages: none
+      pull-requests: none
+      repository-projects: none
+      security-events: none
+      statuses: none
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          # debug, c++-17
+          - { toolset: g++-9,      build_type: debug,    cpp_version: 17, os: ubuntu-20.04, do_fuzz: false }
+          - { toolset: g++-11,     build_type: debug,    cpp_version: 17, os: ubuntu-20.04, do_fuzz: false }
+          - { toolset: g++-10,     build_type: debug,    cpp_version: 17, os: ubuntu-20.04, do_fuzz: false }
+          - { toolset: clang++-9,  build_type: debug,    cpp_version: 17, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-10, build_type: debug,    cpp_version: 17, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-11, build_type: debug,    cpp_version: 17, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-12, build_type: debug,    cpp_version: 17, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-13, build_type: debug,    cpp_version: 17, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-13, build_type: debug,    cpp_version: 17, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ -fno-exceptions }
+          - { toolset: clang++-13, build_type: debug,    cpp_version: 17, os: ubuntu-20.04, do_fuzz: true }
+          # debug, c++-20
+          - { toolset: g++-9,      build_type: debug,    cpp_version: 20, os: ubuntu-20.04, do_fuzz: false }
+          - { toolset: g++-11,     build_type: debug,    cpp_version: 20, os: ubuntu-20.04, do_fuzz: false }
+          - { toolset: g++-10,     build_type: debug,    cpp_version: 20, os: ubuntu-20.04, do_fuzz: false }
+          - { toolset: clang++-9,  build_type: debug,    cpp_version: 20, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-10, build_type: debug,    cpp_version: 20, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-11, build_type: debug,    cpp_version: 20, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-12, build_type: debug,    cpp_version: 20, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-13, build_type: debug,    cpp_version: 20, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-13, build_type: debug,    cpp_version: 20, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ -fno-exceptions }
+          - { toolset: clang++-13, build_type: debug,    cpp_version: 20, os: ubuntu-20.04, do_fuzz: true }
+          # release, c++-17
+          - { toolset: g++-9,      build_type: release,  cpp_version: 17, os: ubuntu-20.04, do_fuzz: false }
+          - { toolset: g++-11,     build_type: release,  cpp_version: 17, os: ubuntu-20.04, do_fuzz: false }
+          - { toolset: g++-10,     build_type: release,  cpp_version: 17, os: ubuntu-20.04, do_fuzz: false }
+          - { toolset: clang++-9,  build_type: release,  cpp_version: 17, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-10, build_type: release,  cpp_version: 17, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-11, build_type: release,  cpp_version: 17, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-12, build_type: release,  cpp_version: 17, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-13, build_type: release,  cpp_version: 17, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-13, build_type: release,  cpp_version: 17, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ -fno-exceptions }
+          - { toolset: clang++-13, build_type: release,  cpp_version: 17, os: ubuntu-20.04, do_fuzz: false }
+          # release, c++-20
+          - { toolset: g++-9,      build_type: release,  cpp_version: 20, os: ubuntu-20.04, do_fuzz: false }
+          - { toolset: g++-11,     build_type: release,  cpp_version: 20, os: ubuntu-20.04, do_fuzz: false }
+          - { toolset: g++-10,     build_type: release,  cpp_version: 20, os: ubuntu-20.04, do_fuzz: false }
+          - { toolset: clang++-9,  build_type: release,  cpp_version: 20, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-10, build_type: release,  cpp_version: 20, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-11, build_type: release,  cpp_version: 20, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-12, build_type: release,  cpp_version: 20, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-13, build_type: release,  cpp_version: 20, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ }
+          - { toolset: clang++-13, build_type: release,  cpp_version: 20, os: ubuntu-20.04, do_fuzz: false, cxx_flags: -stdlib=libc++ -fno-exceptions }
+          - { toolset: clang++-13, build_type: release,  cpp_version: 20, os: ubuntu-20.04, do_fuzz: true }
+    runs-on: ${{ matrix.config.os }}
+    name: "${{ matrix.config.os }} ${{ matrix.config.toolset }} ${{ matrix.config.cpp_version }} ${{ matrix.config.build_type }} ${{ matrix.config.cxx_flags }}"
     steps:
-    - uses: actions/checkout@v1
-    - name: Add LLVM Repo
-      run: sudo sh ./ci_scripts/ci_add_llvm_apt_ubuntu.sh
-    - name: Download & Install Apt Dependencies
-      run: |        
-        sudo apt update
-        sudo apt install clang-9 lldb-9 lld-9 libc++-9-dev libc++abi-9-dev
-    - name: Build
-      run: ./ci_scripts/ci_ubuntu_build.sh
-    - name: Test
-      run: ./ci_scripts/ci_ubuntu_test.sh
-    - name: InstallTest
-      run: ./ci_scripts/ci_ubuntu_install_test.sh
+      - uses: actions/checkout@v1
+      - name: Setup APT and Base Dependencies
+        run: |
+          sudo wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
+          sudo apt-add-repository 'deb https://apt.llvm.org/focal/ llvm-toolchain-focal-12 main'
+          sudo apt-add-repository 'deb https://apt.llvm.org/focal/ llvm-toolchain-focal-13 main'
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+          sudo apt update
+          sudo apt install ninja-build libunwind-dev
+      - name: Get Clang Version
+        if: startsWith( matrix.config.toolset, 'clang' )
+        run: |
+          echo "DAW_CLANG_VER=$(echo ${{matrix.config.toolset}} | cut -d- -f2)" >> $GITHUB_ENV
+      - name: Get Clang Environment
+        if: startsWith( matrix.config.toolset, 'clang' )
+        run: |
+          echo "CC=$(echo clang-${{ env.DAW_CLANG_VER }})" >> $GITHUB_ENV
+          echo "CXX=$(echo clang++-${{ env.DAW_CLANG_VER }})" >> $GITHUB_ENV
+          echo "UBSAN_OPTIONS='halt_on_errors=1'" >> $GITHUB_ENV
+      - name: Install Clang Environment
+        if: startsWith( matrix.config.toolset, 'clang' )
+        run: |
+          sudo apt install ${{ env.CC }} libc++-${{ env.DAW_CLANG_VER }}-dev libc++abi-${{ env.DAW_CLANG_VER }}-dev
+      - name: Get GCC version
+        if: startsWith( matrix.config.toolset, 'g++' )
+        run: |
+          echo "DAW_GCC_VER=$(echo ${{matrix.config.toolset}} | cut -d- -f2)" >> $GITHUB_ENV
+      - name: Set GCC Environment
+        if: startsWith( matrix.config.toolset, 'g++' )
+        run: |
+          echo "CC=$(echo gcc-${{ env.DAW_GCC_VER }})" >> $GITHUB_ENV
+          echo "CXX=$(echo g++-${{ env.DAW_GCC_VER }})" >> $GITHUB_ENV
+      - name: Install GCC Environment
+        if: startsWith( matrix.config.toolset, 'g++' )
+        run: |
+          sudo apt install ${{ env.CC }} ${{ env.CXX }}
+      - name: Create Build
+        run: |
+          mkdir build
+      - name: Build Dependencies
+        env:
+          CXXFLAGS: ${{ matrix.config.cxx_flags }}
+        run: cmake -GNinja -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DDAW_NUM_RUNS=1 -DDAW_ENABLE_TESTING=ON -DDAW_WERROR=ON -DDAW_JSON_USE_SANITIZERS=ON -DDAW_NO_FLATTEN=ON -DCMAKE_CXX_STANDARD=${{ matrix.config.cpp_version }} -Bbuild/ .
+      - name: Build
+        if: matrix.config.do_fuzz == false
+        run: cmake --build build/ --target daw-utf_range_full -- -k 0
+      - name: Test
+        if: matrix.config.do_fuzz == false
+        run: |
+          sudo service apport stop
+          ulimit -c unlimited
+          ulimit -c
+          sudo sysctl -w kernel.core_pattern=core.%e.%p
+          ctest -C ${{ matrix.config.build_type }} -j2 -VV --timeout 1200 --output-on-failure --test-dir build/
+      - name: Archive any crashes as an artifact
+        uses: actions/upload-artifact@v2
+        if: always( )
+        with:
+          name: crashes
+          path: |
+            crash-*
+            leak-*
+            timeout-*
+            build/core*
+            core*
+            /var/lib/systemd/coredump/*
+            /var/crash/*
+          if-no-files-found: ignore
