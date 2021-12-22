@@ -207,7 +207,8 @@ namespace daw {
 			}
 
 			constexpr daw::string_view to_string_view( ) const noexcept {
-				return { raw_begin( ), static_cast<std::size_t>( std::distance( raw_begin( ), raw_end( ) ) ) };
+				return { raw_begin( ), static_cast<std::size_t>(
+				                         std::distance( raw_begin( ), raw_end( ) ) ) };
 			}
 		}; // struct utf_range
 

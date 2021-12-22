@@ -26,7 +26,7 @@
 
 void char_range_test_001( ) {
 	constexpr auto const rng =
-	  daw::range::create_char_range( u8"Приве́т नमस्ते שָׁלוֹם" );
+	  daw::range::create_char_range( R"(Приве́т नमस्ते שָׁלוֹם)" );
 	for( auto c : rng ) {
 		std::cout << c << '\n';
 	}
@@ -35,4 +35,3 @@ void char_range_test_001( ) {
 int main( ) {
 	char_range_test_001( );
 }
-
