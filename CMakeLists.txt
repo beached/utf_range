@@ -9,15 +9,13 @@
 cmake_minimum_required(VERSION 3.14)
 
 project("daw-utf-range"
-        VERSION "2.2.1"
+        VERSION "2.2.2"
         DESCRIPTION "UTF8 Iterator/Range for traversing utf8 text"
         HOMEPAGE_URL "https://github.com/beached/utf_range"
         LANGUAGES C CXX
         )
 
 set(CMAKE_CXX_STANDARD 17 CACHE STRING "The C++ standard whose features are requested.")
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(DAW_USE_PACKAGE_MANAGEMENT "Do not use FetchContent and assume dependencies are installed" OFF)
 if (NOT DAW_USE_PACKAGE_MANAGEMENT)
