@@ -14,10 +14,10 @@
 #include <daw/cpp_17.h>
 #include <daw/daw_algorithm.h>
 #include <daw/daw_fnv1a_hash.h>
-#include <daw/daw_move.h>
 #include <daw/daw_string_view.h>
 #include <daw/daw_traits.h>
 
+#include <daw/stdinc/move_fwd_exch.h>
 #include <iostream>
 #include <string>
 
@@ -141,9 +141,9 @@ namespace daw {
 		}
 
 		[[nodiscard]] inline std::string to_string( ) &&noexcept {
-			auto result = DAW_MOVE( m_values );
+			auto result = std::move( m_values );
 			m_range = range::create_char_range( m_values );
-			return DAW_MOVE( m_values );
+			return std::move( m_values );
 		}
 
 		[[nodiscard]] inline std::u32string to_u32string( ) const {
@@ -221,7 +221,7 @@ inline std::string to_string( daw::utf_string const &str ) {
 }
 
 inline std::string to_string( daw::utf_string &&str ) {
-	return DAW_MOVE( str ).to_string( );
+	return std::move( str ).to_string( );
 }
 
 namespace std {
