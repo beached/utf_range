@@ -221,13 +221,13 @@ namespace daw::utf8::unchecked {
 		}
 
 		constexpr iterator &operator++( ) noexcept {
-			daw::advance( it, utf8::internal::sequence_length( it ) );
+			std::advance( it, utf8::internal::sequence_length( it ) );
 			return *this;
 		}
 
 		constexpr iterator operator++( int ) noexcept {
 			iterator temp = *this;
-			daw::advance( it, utf8::internal::sequence_length( it ) );
+			std::advance( it, utf8::internal::sequence_length( it ) );
 			return temp;
 		}
 
