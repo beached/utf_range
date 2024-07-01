@@ -310,7 +310,7 @@ namespace daw::utf8 {
 		using reference = value_type &;
 
 		constexpr iterator( ) noexcept(
-		  std::is_nothrow_default_constructible<octet_iterator>::value ) = default;
+		  std::is_nothrow_default_constructible_v<octet_iterator> ) = default;
 
 		constexpr explicit iterator( octet_iterator const &octet_it,
 		                             octet_iterator const &rangestart,
@@ -327,7 +327,7 @@ namespace daw::utf8 {
 
 		// the default "big three" are OK
 		constexpr octet_iterator base( ) const
-		  noexcept( std::is_nothrow_copy_constructible<octet_iterator>::value ) {
+		  noexcept( std::is_nothrow_copy_constructible_v<octet_iterator> ) {
 			return it;
 		}
 
