@@ -118,8 +118,9 @@ namespace daw::utf8::unchecked {
 	}
 
 	template<typename octet_iterator>
-	constexpr auto distance( octet_iterator first, octet_iterator last ) noexcept
-	  -> typename std::iterator_traits<octet_iterator>::difference_type {
+	constexpr auto distance( octet_iterator first,
+	                         octet_iterator last ) noexcept ->
+	  typename std::iterator_traits<octet_iterator>::difference_type {
 
 		typename std::iterator_traits<octet_iterator>::difference_type dist = 0;
 		for( ; first < last; ++dist ) {
@@ -195,15 +196,15 @@ namespace daw::utf8::unchecked {
 		using const_reference = value_type const &;
 
 		constexpr iterator( ) noexcept(
-		  std::is_nothrow_default_constructible<octet_iterator>::value ) {}
+		  std::is_nothrow_default_constructible_v<octet_iterator> ) {}
 
 		constexpr explicit iterator( const octet_iterator &octet_it ) noexcept(
-		  std::is_nothrow_copy_constructible<octet_iterator>::value )
+		  std::is_nothrow_copy_constructible_v<octet_iterator> )
 		  : it( octet_it ) {}
 
 		// the default "big three" are OK
 		constexpr octet_iterator base( ) const
-		  noexcept( std::is_nothrow_copy_constructible<octet_iterator>::value ) {
+		  noexcept( std::is_nothrow_copy_constructible_v<octet_iterator> ) {
 			return it;
 		}
 
