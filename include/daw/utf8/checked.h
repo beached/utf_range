@@ -29,8 +29,8 @@ DEALINGS IN THE SOFTWARE.
 #include "core.h"
 
 #include <daw/daw_exception.h>
+#include <daw/ciso646.h>
 
-#include <ciso646>
 #include <stdexcept>
 
 namespace daw::utf8 {
