@@ -15,8 +15,6 @@ project("daw-utf-range"
         LANGUAGES C CXX
         )
 
-set(CMAKE_CXX_STANDARD 17 CACHE STRING "The C++ standard whose features are requested.")
-
 option(DAW_USE_PACKAGE_MANAGEMENT "Do not use FetchContent and assume dependencies are installed" OFF)
 if (NOT DAW_USE_PACKAGE_MANAGEMENT)
     add_subdirectory(extern)
@@ -36,6 +34,7 @@ set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 add_library(${PROJECT_NAME} INTERFACE)
 add_library(daw::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 add_library(daw::utf_range ALIAS ${PROJECT_NAME})
+target_compile_features( pdf_merge PUBLIC cxx_std_17 )
 target_link_libraries(${PROJECT_NAME} INTERFACE daw::daw-header-libraries ${COMPILER_SPECIFIC_LIBS})
 
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
