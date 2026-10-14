@@ -9,7 +9,7 @@
 cmake_minimum_required(VERSION 3.14)
 
 project("daw-utf-range"
-        VERSION "2.2.6"
+        VERSION "2.2.7"
         DESCRIPTION "UTF8 Iterator/Range for traversing utf8 text"
         HOMEPAGE_URL "https://github.com/beached/utf_range"
         LANGUAGES C CXX
@@ -34,7 +34,6 @@ set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 add_library(${PROJECT_NAME} INTERFACE)
 add_library(daw::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 add_library(daw::utf_range ALIAS ${PROJECT_NAME})
-target_compile_features( pdf_merge PUBLIC cxx_std_17 )
 target_link_libraries(${PROJECT_NAME} INTERFACE daw::daw-header-libraries ${COMPILER_SPECIFIC_LIBS})
 
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
